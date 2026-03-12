@@ -1,5 +1,9 @@
 Options -Indexes
 
+<FilesMatch "^\.env|composer\.json|phpunit\.xml">
+    Require all denied
+</FilesMatch>
+
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
