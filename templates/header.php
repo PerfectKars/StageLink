@@ -6,6 +6,8 @@
     <meta name="description" content="StageLink — Plateforme de recherche de stages pour étudiants CESI">
     <meta name="keywords" content="stage, offre de stage, alternance, CESI, recrutement">
     <title><?= htmlspecialchars($title ?? 'StageLink', ENT_QUOTES, 'UTF-8') ?></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
@@ -13,7 +15,8 @@
 <header class="site-header">
     <nav class="navbar" aria-label="Navigation principale">
         <a href="/" class="navbar__brand">
-            <strong>Stage<span>Link</span></strong>
+            <img src="/assets/img/Logo.webp" alt="StageLink" style="height:60px;width:auto;">
+            STAGELINK
         </a>
 
         <button class="navbar__burger" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu">
@@ -39,7 +42,7 @@
                 <li><a href="/profil"><?= htmlspecialchars($_SESSION['user']['prenom'], ENT_QUOTES, 'UTF-8') ?></a></li>
                 <li><a href="/logout" class="btn btn--outline">Déconnexion</a></li>
             <?php else: ?>
-                <li><a href="/login" class="btn btn--primary">Connexion</a></li>
+                <li><a href="/login" class="btn btn--primary">Se connecter</a></li>
             <?php endif; ?>
         </ul>
     </nav>
