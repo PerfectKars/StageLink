@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Droits d'Auteur & Copyright</title>
+  <style>
+    body { font-family: Georgia, serif; max-width: 760px; margin: 0 auto; padding: 40px 24px; background: #fff; color: #111; font-size: 16px; line-height: 1.8; }
+    h1 { font-size: 1.8rem; margin-bottom: 4px; }
+    .date { color: #555; font-size: 14px; margin-bottom: 40px; }
+    h2 { font-size: 1.1rem; margin-top: 36px; margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
+    p { margin-bottom: 12px; }
+    ul { margin: 0 0 12px 20px; }
+    li { margin-bottom: 4px; }
+    blockquote { border-left: 3px solid #ccc; margin: 16px 0; padding: 8px 20px; color: #444; font-style: italic; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th { text-align: left; padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; }
+    td { padding: 8px 12px; border: 1px solid #ddd; }
+    a { color: #111; }
+  </style>
+</head>
+<body>
+ 
+<h1>Droits d'Auteur &amp; Copyright</h1>
+<p class="date">Dernière mise à jour : mars 2026</p>
+ 
+<h2>1. Propriété du contenu</h2>
+<p>L'ensemble des contenus présents sur ce site — textes, graphismes, logos, images, données et logiciels — est la propriété exclusive de <strong>StageLink</strong> et est protégé par le droit français et international de la propriété intellectuelle.</p>
+<blockquote>Article L.111-1 du Code de la Propriété Intellectuelle : « L'auteur d'une œuvre de l'esprit jouit sur cette œuvre, du seul fait de sa création, d'un droit de propriété incorporelle exclusif et opposable à tous. »</blockquote>
+<p>En France, la protection est automatique dès la création : aucun dépôt ou enregistrement n'est nécessaire pour être protégé.</p>
+ 
+<h2>2. Contenus protégés</h2>
+<p>Les éléments suivants sont protégés par le droit d'auteur :</p>
+<ul>
+  <li>Textes, articles et descriptions rédigés par nos soins</li>
+  <li>Logos, illustrations, maquettes et charte graphique</li>
+  <li>Code source, scripts et feuilles de style</li>
+  <li>Structure et organisation de la base de données des offres de stage</li>
+</ul>
+ 
+<h2>3. Utilisations autorisées</h2>
+<p>Les utilisations suivantes sont autorisées sans demande préalable :</p>
+<ul>
+  <li>Consultation personnelle et non commerciale du site</li>
+  <li>Citation courte avec mention claire de la source et lien vers notre site</li>
+  <li>Utilisation d'extraits dans un cadre pédagogique non commercial</li>
+  <li>Partage de liens vers nos pages</li>
+</ul>
+<p>Pour toute autre utilisation, une autorisation écrite préalable est requise.</p>
+ 
+<h2>4. Utilisations interdites</h2>
+<p>Sans autorisation écrite, il est strictement interdit de :</p>
+<ul>
+  <li>Reproduire ou diffuser tout ou partie du contenu à des fins commerciales</li>
+  <li>Modifier, adapter, traduire ou créer des œuvres dérivées</li>
+  <li>Utiliser les logos, marques ou éléments graphiques du site</li>
+  <li>Extraire ou scraper en masse les données du site</li>
+  <li>Présenter le contenu comme étant votre propriété (plagiat)</li>
+  <li>Intégrer le site dans un iframe sans autorisation</li>
+</ul>
+ 
+<h2>5. Sanctions applicables</h2>
+<p>Toute utilisation non autorisée constitue un acte de contrefaçon, sanctionné par l'article L.335-2 du Code de la Propriété Intellectuelle :</p>
+<table>
+  <thead><tr><th>Situation</th><th>Amende</th><th>Peine de prison</th></tr></thead>
+  <tbody>
+    <tr><td>Contrefaçon</td><td>jusqu'à 300 000 €</td><td>jusqu'à 3 ans</td></tr>
+    <tr><td>Bande organisée</td><td>jusqu'à 750 000 €</td><td>jusqu'à 7 ans</td></tr>
+  </tbody>
+</table>
+<p>Des dommages et intérêts civils peuvent s'ajouter aux sanctions pénales.</p>
+ 
+<h2>6. Contenus tiers</h2>
+<p>Certains contenus proviennent de tiers (images sous licence, icônes Creative Commons…). Ces contenus restent la propriété de leurs auteurs respectifs. Toute utilisation est soumise à leurs licences d'origine.</p>
+<p>Si vous estimez qu'un contenu de ce site vous appartient, contactez-nous immédiatement.</p>
+ 
+<h2>7. Contact</h2>
+<p>Pour signaler une violation ou demander une autorisation d'utilisation :<br>
+Email : <a href="mailto:[stagelink@contact.co]">stagelink@contact.co</a> (objet : "Droit d'auteur – stagelink")<br>
+Courrier : StageLink, 10 rue du bois le chene le loup</p>
+ 
+</body>
+</html>
+ 
