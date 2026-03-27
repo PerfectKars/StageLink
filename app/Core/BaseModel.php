@@ -44,4 +44,23 @@ abstract class BaseModel
     {
         return htmlspecialchars(strip_tags(trim($value)), ENT_QUOTES, 'UTF-8');
     }
+
+    protected function fetchAll(string $sql, array $params = []): array
+{
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchAll();
+}
+
+protected function fetchColumn(string $sql, array $params = []): mixed
+{
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchColumn();
+}
+
+protected function execute(string $sql, array $params = []): bool
+{
+    return $this->db->prepare($sql)->execute($params);
+}
 }

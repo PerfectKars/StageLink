@@ -96,7 +96,7 @@ class EntrepriseController extends BaseController
         $this->redirect('/entreprises/' . $id);
     }
 
-    private function getFormData(): array
+    protected function getFormData(): array
     {
         return [
             'Nom'           => trim($_POST['Nom'] ?? ''),
