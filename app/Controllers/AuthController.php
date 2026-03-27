@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Controllers;
 
 use App\Core\BaseController;
@@ -16,44 +14,26 @@ class AuthController extends BaseController
         $this->userModel = new UserModel();
     }
 
-    /**
-     * Affiche le formulaire de connexion
-     */
     public function loginForm(): void
     {
         if (!empty($_SESSION['user'])) {
             $this->redirect('/');
         }
-
         $this->render('auth/login', ['title' => 'Connexion']);
     }
 
-    /**
-     * Traite la connexion
-     */
     public function login(): void
     {
-        // Vérification CSRF
-        if (!$this->verifyCsrf()) {
-            $this->render('auth/login', [
-                'title' => 'Connexion',
-                'error' => 'Token de sécurité invalide. Réessayez.',
-            ]);
-            return;
-        }
+        $this->verifyCsrf();
 
-        $email    = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-
-        if (empty($email) || empty($password)) {
-            $this->render('auth/login', [
-                'title' => 'Connexion',
-                'error' => 'Veuillez remplir tous les champs.',
-            ]);
-            return;
-        }
+        $email    = trim($_POST['email']    ?? '');
+        $password = trim($_POST['password'] ?? '');
 
         $user = $this->userModel->authenticate($email, $password);
+        // DEBUG TEMPORAIRE — à supprimer après
+$raw = $this->userModel->findByEmail($email);
+error_log("USER FOUND: " . json_encode($raw ? array_keys($raw) : 'NOT FOUND'));
+error_log("VERIFY: " . var_export($raw ? password_verify($password, $raw['Mot_de_passe']) : false, true));
 
         if (!$user) {
             $this->render('auth/login', [
@@ -66,33 +46,22 @@ class AuthController extends BaseController
         // Régénération de l'ID de session (prévention fixation de session)
         session_regenerate_id(true);
 
+        // Stockage session — clés normalisées en minuscules
         $_SESSION['user'] = [
-            'id'     => $user['id_utilisateur'],
-            'nom'    => $user['nom'],
-            'prenom' => $user['prenom'],
-            'email'  => $user['email'],
-            'role'   => $user['role'],
+            'id'     => (int) $user['Id_utilisateur'],
+            'nom'    => $user['nom']    ?? '',
+            'prenom' => $user['prenom'] ?? '',
+            'email'  => $user['Email'],
+            'role'   => $user['Role'],   // 'admin' | 'pilote' | 'etudiant'
         ];
 
         $this->redirect('/');
     }
 
-    /**
-     * Déconnecte l'utilisateur
-     */
     public function logout(): void
     {
-        $_SESSION = [];
         session_destroy();
+        header('Clear-Site-Data: "cache", "cookies"');
         $this->redirect('/login');
-    }
-
-    /**
-     * Vérifie le token CSRF
-     */
-    private function verifyCsrf(): bool
-    {
-        $token = $_POST['csrf_token'] ?? '';
-        return hash_equals($_SESSION['csrf_token'] ?? '', $token);
     }
 }

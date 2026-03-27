@@ -31,6 +31,12 @@ session_set_cookie_params([
 ]);
 session_start();
 
+// Anti-cache pour les pages authentifiées
+if (!empty($_SESSION['user'])) {
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+    header('Pragma: no-cache');
+}
+
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }

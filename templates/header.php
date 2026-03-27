@@ -39,7 +39,14 @@
                     <li><a href="/admin/pilotes">Pilotes</a></li>
                 <?php endif; ?>
 
-                <li><a href="/profil"><?= htmlspecialchars($_SESSION['user']['prenom'], ENT_QUOTES, 'UTF-8') ?></a></li>
+                <li>
+    <a href="/profil" style="display:flex;align-items:center;gap:.4rem;">
+        <span style="width:28px;height:28px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:700;">
+            <?= strtoupper(substr($_SESSION['user']['prenom'] ?? 'U', 0, 1)) ?>
+        </span>
+        <?= htmlspecialchars($_SESSION['user']['prenom'] ?? 'Profil', ENT_QUOTES, 'UTF-8') ?>
+    </a>
+</li>
                 <li><a href="/logout" class="btn btn--outline">Déconnexion</a></li>
             <?php else: ?>
                 <li><a href="/login" class="btn btn--primary">Se connecter</a></li>

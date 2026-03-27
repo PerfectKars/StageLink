@@ -1,35 +1,56 @@
 <section class="section">
     <div class="container">
-        <h1>Offres de stage</h1>
+        <h1 style="font-family:var(--font-head);font-size:1.6rem;font-weight:800;margin-bottom:1.5rem;">
+            Recherche d'offres de stage
+        </h1>
 
-        <form method="GET" action="/offres" class="search-form">
-            <input type="text" name="titre" placeholder="Titre de l'offre"
-                   value="<?= htmlspecialchars($filters['titre'], ENT_QUOTES, 'UTF-8') ?>">
-            <input type="text" name="ville" placeholder="Ville"
-                   value="<?= htmlspecialchars($filters['ville'], ENT_QUOTES, 'UTF-8') ?>">
-            <input type="text" name="competence" placeholder="Compétence"
-                   value="<?= htmlspecialchars($filters['competence'], ENT_QUOTES, 'UTF-8') ?>">
-            <button type="submit" class="btn btn--primary">Rechercher</button>
-        </form>
+        <div class="search-form">
+            <form method="GET" action="/offres" style="display:flex;flex-wrap:wrap;gap:.75rem;width:100%">
+                <input type="text" name="titre" placeholder="Titre de l'offre"
+                       style="flex:1;min-width:180px"
+                       value="<?= htmlspecialchars($filters['titre'], ENT_QUOTES, 'UTF-8') ?>">
+                <input type="text" name="ville" placeholder="Ville"
+                       style="flex:1;min-width:140px"
+                       value="<?= htmlspecialchars($filters['ville'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                <input type="text" name="competence" placeholder="Compétence"
+                       style="flex:1;min-width:140px"
+                       value="<?= htmlspecialchars($filters['competence'], ENT_QUOTES, 'UTF-8') ?>">
+                <button type="submit" class="btn btn--primary">Rechercher</button>
+            </form>
+        </div>
 
         <?php if (in_array($_SESSION['user']['role'] ?? '', ['admin', 'pilote'])): ?>
-            <a href="/offres/create" class="btn btn--secondary">+ Créer une offre</a>
+            <a href="/offres/create" class="btn btn--secondary mb-2">+ Créer une offre</a>
         <?php endif; ?>
+
+        <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:1rem;">
+            <?= $total ?> offre<?= $total > 1 ? 's' : '' ?> trouvée<?= $total > 1 ? 's' : '' ?>
+        </p>
 
         <?php if (empty($offres)): ?>
             <p class="empty-state">Aucune offre ne correspond à votre recherche.</p>
         <?php else: ?>
-            <div class="cards-grid">
+            <div style="display:flex;flex-direction:column;gap:1rem;">
                 <?php foreach ($offres as $offre): ?>
                     <article class="card">
                         <h2 class="card__title">
-                            <a href="/offres/<?= $offre['id_offre'] ?>">
-                                <?= htmlspecialchars($offre['titre'], ENT_QUOTES, 'UTF-8') ?>
+                            <a href="/offres/<?= $offre['Id_offre'] ?>">
+                                <?= htmlspecialchars($offre['Titre'], ENT_QUOTES, 'UTF-8') ?>
                             </a>
                         </h2>
-                        <p><?= htmlspecialchars($offre['raison_sociale'], ENT_QUOTES, 'UTF-8') ?></p>
-                        <p><?= htmlspecialchars($offre['ville_stage'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
-                        <p><?= $offre['duree_mois'] ?> mois · <?= $offre['nb_candidatures'] ?> candidature(s)</p>
+                        <p class="card__company"><?= htmlspecialchars($offre['raison_sociale'] ?? '', ENT_QUOTES, 'UTF-8') ?></p>
+                        <div class="card__meta">
+                            <span class="card__meta-item">📍 <?= htmlspecialchars($offre['Ville'] ?? 'Non précisé', ENT_QUOTES, 'UTF-8') ?></span>
+                            <span class="card__meta-item">💶 <?= number_format((float)($offre['Base_remuneration'] ?? 0), 2) ?> €/mois</span>
+                            <span class="card__meta-item">👥 <?= $offre['nb_candidatures'] ?> candidature(s)</span>
+                        </div>
+                        <?php if (!empty($offre['competences'])): ?>
+                        <div class="card__tags">
+                            <?php foreach (array_slice($offre['competences'], 0, 4) as $comp): ?>
+                                <span class="tag"><?= htmlspecialchars($comp['Libelle'], ENT_QUOTES, 'UTF-8') ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                        <?php endif; ?>
                     </article>
                 <?php endforeach; ?>
             </div>
