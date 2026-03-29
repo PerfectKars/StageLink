@@ -32,8 +32,6 @@ class AuthController extends BaseController
         $user = $this->userModel->authenticate($email, $password);
         // DEBUG TEMPORAIRE — à supprimer après
 $raw = $this->userModel->findByEmail($email);
-error_log("USER FOUND: " . json_encode($raw ? array_keys($raw) : 'NOT FOUND'));
-error_log("VERIFY: " . var_export($raw ? password_verify($password, $raw['Mot_de_passe']) : false, true));
 
         if (!$user) {
             $this->render('auth/login', [

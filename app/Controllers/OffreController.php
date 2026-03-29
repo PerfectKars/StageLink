@@ -57,27 +57,30 @@ class OffreController extends BaseController
     {
         $this->requireRole('admin', 'pilote');
         $this->render('offre/form', [
-            'title'       => 'Créer une offre',
-            'offre'       => null,
-            'entreprises' => $this->entrepriseModel->findAll(100),
-            'competences' => $this->offreModel->findAllCompetences(),
+            'title'              => 'Créer une offre',
+            'offre'              => null,
+            'entreprises'        => $this->entrepriseModel->findAll(100),
+            'sitesParEntreprise' => $this->entrepriseModel->getAllSitesGrouped(),
+            'competences'        => $this->offreModel->findAllCompetences(),
         ]);
     }
 
     public function create(): void
     {
         $this->requireRole('admin', 'pilote');
+        $this->verifyCsrf();
         $data        = $this->getFormData();
         $errors      = $this->validate($data);
         $competences = $_POST['competences'] ?? [];
 
         if (!empty($errors)) {
             $this->render('offre/form', [
-                'title'       => 'Créer une offre',
-                'offre'       => $data,
-                'errors'      => $errors,
-                'entreprises' => $this->entrepriseModel->findAll(100),
-                'competences' => $this->offreModel->findAllCompetences(),
+                'title'              => 'Créer une offre',
+                'offre'              => $data,
+                'errors'             => $errors,
+                'entreprises'        => $this->entrepriseModel->findAll(100),
+                'sitesParEntreprise' => $this->entrepriseModel->getAllSitesGrouped(),
+                'competences'        => $this->offreModel->findAllCompetences(),
             ]);
             return;
         }
@@ -91,16 +94,18 @@ class OffreController extends BaseController
         $this->requireRole('admin', 'pilote');
         $offre = $this->offreModel->findByIdFull((int) $id);
         $this->render('offre/form', [
-            'title'       => 'Modifier l\'offre',
-            'offre'       => $offre,
-            'entreprises' => $this->entrepriseModel->findAll(100),
-            'competences' => $this->offreModel->findAllCompetences(),
+            'title'              => 'Modifier l\'offre',
+            'offre'              => $offre,
+            'entreprises'        => $this->entrepriseModel->findAll(100),
+            'sitesParEntreprise' => $this->entrepriseModel->getAllSitesGrouped(),
+            'competences'        => $this->offreModel->findAllCompetences(),
         ]);
     }
 
     public function edit(string $id): void
     {
         $this->requireRole('admin', 'pilote');
+        $this->verifyCsrf();
         $data        = $this->getFormData();
         $competences = $_POST['competences'] ?? [];
         $this->offreModel->update((int) $id, $data, $competences);
@@ -110,6 +115,7 @@ class OffreController extends BaseController
     public function delete(string $id): void
     {
         $this->requireRole('admin', 'pilote');
+        $this->verifyCsrf();
         $this->offreModel->deleteById((int) $id);
         $this->redirect('/offres');
     }
@@ -127,20 +133,33 @@ class OffreController extends BaseController
     protected function getFormData(): array
     {
         return [
-            'Titre'            => trim($_POST['Titre'] ?? ''),
-            'Description'      => trim($_POST['Description'] ?? ''),
-            'Base_remuneration'=> (float) ($_POST['Base_remuneration'] ?? 0),
-            'Date_offre'       => $_POST['Date_offre'] ?? date('Y-m-d'),
-            'Id_entreprise'    => (int) ($_POST['Id_entreprise'] ?? 0),
+            'Titre'             => trim($_POST['Titre']             ?? ''),
+            'Description'       => trim($_POST['Description']       ?? ''),
+            'Base_remuneration' => (float)($_POST['Base_remuneration'] ?? 0),
+            'duree_mois'        => (int)($_POST['duree_mois']       ?? 0),
+            'Date_offre'        => $_POST['Date_offre']             ?? date('Y-m-d'),
+            'Id_entreprise'     => (int)($_POST['Id_entreprise']    ?? 0),
+            'Id_site'           => (int)($_POST['Id_site']          ?? 0),
         ];
     }
 
     protected function validate(array $data): array
-    {
-        $errors = [];
-        if (empty($data['Titre']))         $errors[] = 'Le titre est obligatoire.';
-        if (empty($data['Description']))   $errors[] = 'La description est obligatoire.';
-        if ($data['Id_entreprise'] === 0)  $errors[] = 'Veuillez sélectionner une entreprise.';
-        return $errors;
-    }
+{
+    $errors = [];
+    if (empty($data['Titre']))
+        $errors[] = 'Le titre est obligatoire.';
+    if (empty($data['Description']))
+        $errors[] = 'La description est obligatoire.';
+    if ($data['Id_entreprise'] === 0)
+        $errors[] = 'Veuillez sélectionner une entreprise.';
+    if ($data['Id_site'] === 0)
+        $errors[] = 'Veuillez sélectionner un lieu d\'exercice.';
+    if ($data['duree_mois'] <= 0)
+        $errors[] = 'La durée est obligatoire.';
+    elseif ($data['duree_mois'] > 6)
+        $errors[] = 'La durée maximale d\'un stage est de 6 mois.';
+    if ($data['duree_mois'] > 2 && $data['Base_remuneration'] < 4.50)
+        $errors[] = 'Pour un stage de plus de 2 mois, la gratification minimale légale est de 4,50 €/h.';
+    return $errors;
+}
 }

@@ -35,13 +35,14 @@ $router->post('/entreprises/:id/delete',   ['EntrepriseController',  'delete']);
 $router->post('/entreprises/:id/noter',    ['EntrepriseController',  'noter']);
 
 // ── Candidatures ──────────────────────────────────────────────────────────────
-$router->post('/offres/:id/postuler',      ['CandidatureController', 'postuler']);
+$router->get('/offres/:id/postuler',  ['CandidatureController', 'postulerForm']);
+$router->post('/offres/:id/postuler', ['CandidatureController', 'postuler']);
 $router->get('/mes-candidatures',          ['CandidatureController', 'mesCandidatures']);
 
 // ── Wishlist ──────────────────────────────────────────────────────────────────
-$router->get('/wishlist',                  ['WishlistController',    'index']);
-$router->post('/wishlist/:id/add',         ['WishlistController',    'add']);
-$router->post('/wishlist/:id/remove',      ['WishlistController',    'remove']);
+$router->get('/wishlist',        ['WishlistController', 'index']);
+$router->post('/wishlist/add',   ['WishlistController', 'add']);
+$router->post('/wishlist/remove',['WishlistController', 'remove']);
 
 // ── Profil ────────────────────────────────────────────────────────────────────
 $router->get('/profil',                    ['ProfilController',      'index']);
