@@ -180,4 +180,20 @@ class EtudiantModel extends BaseModel
             WHERE e.Id_etudiant = :id
         ")->execute([':id' => $idEtudiant]);
     }
+
+    public function updatePhoto(int $idEtudiant, string $nomFichier): void
+{
+    $this->db->prepare(
+        "UPDATE ETUDIANT SET photo = :photo WHERE Id_etudiant = :id"
+    )->execute([':photo' => $nomFichier, ':id' => $idEtudiant]);
+}
+
+public function getPhoto(int $idEtudiant): string|null
+{
+    $stmt = $this->db->prepare(
+        "SELECT photo FROM ETUDIANT WHERE Id_etudiant = :id"
+    );
+    $stmt->execute([':id' => $idEtudiant]);
+    return $stmt->fetchColumn() ?: null;
+}
 }

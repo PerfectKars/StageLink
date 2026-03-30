@@ -53,7 +53,7 @@ class EtudiantController extends BaseController
     /** GET /admin/etudiants/create */
     public function createForm(): void
     {
-        $this->requireRole('admin');
+        $this->requireRole('admin', 'pilote');
         $promotions = $this->etudiantModel->getPromotions();
         $this->render('admin/etudiants/form', [
             'title'      => 'Créer un étudiant',
@@ -66,7 +66,7 @@ class EtudiantController extends BaseController
     /** POST /admin/etudiants/create */
     public function create(): void
     {
-        $this->requireRole('admin');
+        $this->requireRole('admin', 'pilote');
         $this->verifyCsrf();
 
         $data   = $this->getFormData();
@@ -85,7 +85,10 @@ class EtudiantController extends BaseController
         try {
             $this->etudiantModel->createEtudiant($data);
             $_SESSION['flash_success'] = 'Étudiant créé avec succès.';
-            $this->redirect('/admin/etudiants');
+$redirect = $_SESSION['user']['role'] === 'pilote'
+    ? '/pilote/promotions'
+    : '/admin/etudiants';
+$this->redirect($redirect);
         } catch (\PDOException $e) {
             $errors[] = str_contains($e->getMessage(), '1062')
                 ? 'Cet email est déjà utilisé.'
@@ -102,7 +105,7 @@ class EtudiantController extends BaseController
     /** GET /admin/etudiants/:id/edit */
     public function editForm(string $id): void
     {
-        $this->requireRole('admin');
+        $this->requireRole('admin', 'pilote');
         $etudiant   = $this->etudiantModel->findByIdFull((int) $id);
         $promotions = $this->etudiantModel->getPromotions();
         $this->render('admin/etudiants/form', [
@@ -116,7 +119,7 @@ class EtudiantController extends BaseController
     /** POST /admin/etudiants/:id/edit */
     public function edit(string $id): void
     {
-        $this->requireRole('admin');
+        $this->requireRole('admin', 'pilote');
         $this->verifyCsrf();
 
         $data   = $this->getFormData();
@@ -140,7 +143,7 @@ class EtudiantController extends BaseController
     /** POST /admin/etudiants/:id/delete */
     public function delete(string $id): void
     {
-        $this->requireRole('admin');
+        $this->requireRole('admin', 'pilote');
         $this->verifyCsrf();
         $this->etudiantModel->deleteEtudiant((int) $id);
         $_SESSION['flash_success'] = 'Étudiant supprimé.';

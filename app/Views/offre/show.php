@@ -120,37 +120,99 @@ $userRole      = $_SESSION['user']['role'] ?? '';
             </div>
 
 
+
 <?php if ($userRole === 'etudiant'): ?>
-<div style="margin-top:1rem;">
+<div class="mt-3">
     <?php
-    $wishlistModel = new \App\Models\WishlistModel();
-    $enWishlist    = $wishlistModel->exists($idUtilisateur, (int)($offre['Id_offre'] ?? 0));
+    $dejaPostule = false;
+    $statutCandidature = null;
+    if ($idUtilisateur > 0) {
+        $candidatureModel  = new \App\Models\CandidatureModel();
+        $dejaPostule       = $candidatureModel->aDejaPostule($idUtilisateur, (int)($offre['Id_offre'] ?? 0));
+        if ($dejaPostule) {
+            $statutCandidature = $candidatureModel->getStatutCandidature(
+                $idUtilisateur, (int)($offre['Id_offre'] ?? 0)
+            );
+        }
+    }
     ?>
-    <?php if ($enWishlist): ?>
-        <form method="POST" action="/wishlist/remove" style="display:inline;">
-            <input type="hidden" name="csrf_token"
-                   value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
-            <input type="hidden" name="id_offre" value="<?= (int)$offre['Id_offre'] ?>">
-            <input type="hidden" name="redirect"
-                   value="/offres/<?= (int)$offre['Id_offre'] ?>">
-            <button type="submit" class="btn btn--secondary">
-                ❤️ Retirer de ma wishlist
-            </button>
-        </form>
+
+    <?php if ($statutCandidature === 'Confirmé'): ?>
+        <div class="alert alert-success">
+            🎉 Vous avez confirmé ce stage !
+        </div>
+
+    <?php elseif ($statutCandidature === 'Accepté'): ?>
+        <div style="padding:1.25rem;background:#d1fae5;border-radius:8px;border:1px solid #6ee7b7;">
+            <p style="font-size:.95rem;color:#065f46;font-weight:700;margin-bottom:.5rem;">
+                🎉 Félicitations, votre candidature a été acceptée !
+            </p>
+            <p style="font-size:.85rem;color:#065f46;margin-bottom:1rem;">
+                ⚠️ En confirmant ce stage, toutes vos autres candidatures en cours
+                seront automatiquement refusées.
+            </p>
+            <form method="POST"
+                  action="/mes-candidatures/<?= (int)$offre['Id_offre'] ?>/confirmer">
+                <input type="hidden" name="csrf_token"
+                       value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                <button type="submit" class="btn btn--primary">
+                    ✅ Confirmer ce stage
+                </button>
+            </form>
+        </div>
+
+    <?php elseif ($statutCandidature === 'Refusé'): ?>
+        <div class="alert alert-danger">
+            ❌ Votre candidature a été refusée.
+        </div>
+
+    <?php elseif ($statutCandidature === 'Entretien'): ?>
+        <div style="padding:1rem;background:#fef3c7;border-radius:8px;border:1px solid #fcd34d;">
+            <p style="color:#92400e;font-size:.9rem;">
+                📞 Entretien en cours — nous vous contacterons prochainement.
+            </p>
+        </div>
+
+    <?php elseif ($dejaPostule): ?>
+        <div class="alert alert-success">
+            ✅ Vous avez déjà postulé à cette offre.
+            <a href="/mes-candidatures" style="margin-left:.5rem;">Voir mes candidatures →</a>
+        </div>
+
     <?php else: ?>
-        <form method="POST" action="/wishlist/add" style="display:inline;">
-            <input type="hidden" name="csrf_token"
-                   value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
-            <input type="hidden" name="id_offre" value="<?= (int)$offre['Id_offre'] ?>">
-            <input type="hidden" name="redirect"
-                   value="/offres/<?= (int)$offre['Id_offre'] ?>">
-            <button type="submit" class="btn btn--secondary">
-                🤍 Ajouter à ma wishlist
-            </button>
-        </form>
+        <a href="/offres/<?= (int)($offre['Id_offre'] ?? 0) ?>/postuler"
+           class="btn btn--primary" style="display:inline-block;margin-top:.5rem;">
+            Postuler à cette offre →
+        </a>
     <?php endif; ?>
+
+    <!-- Wishlist -->
+    <div style="margin-top:1rem;">
+        <?php
+        $wishlistModel = new \App\Models\WishlistModel();
+        $enWishlist    = $wishlistModel->exists($idUtilisateur, (int)($offre['Id_offre'] ?? 0));
+        ?>
+        <?php if ($enWishlist): ?>
+            <form method="POST" action="/wishlist/remove" style="display:inline;">
+                <input type="hidden" name="csrf_token"
+                       value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                <input type="hidden" name="id_offre" value="<?= (int)$offre['Id_offre'] ?>">
+                <input type="hidden" name="redirect" value="/offres/<?= (int)$offre['Id_offre'] ?>">
+                <button type="submit" class="btn btn--secondary">❤️ Retirer de ma wishlist</button>
+            </form>
+        <?php else: ?>
+            <form method="POST" action="/wishlist/add" style="display:inline;">
+                <input type="hidden" name="csrf_token"
+                       value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                <input type="hidden" name="id_offre" value="<?= (int)$offre['Id_offre'] ?>">
+                <input type="hidden" name="redirect" value="/offres/<?= (int)$offre['Id_offre'] ?>">
+                <button type="submit" class="btn btn--secondary">🤍 Ajouter à ma wishlist</button>
+            </form>
+        <?php endif; ?>
+    </div>
 </div>
 <?php endif; ?>
+
         
             <?php if ($userRole === 'etudiant'): ?>
 <div class="mt-3">

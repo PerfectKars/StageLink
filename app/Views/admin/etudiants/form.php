@@ -95,8 +95,14 @@ $statuts   = ['En recherche', 'Stage trouvé', 'Non disponible'];
                 </select>
             </div>
 
+            <?php $backUrl = ($_SESSION['user']['role'] ?? '') === 'pilote'
+    ? '/pilote/promotions'
+    : '/admin/etudiants'; ?>
+
+    <a href="<?= $backUrl ?>" style="color:var(--text-muted);font-size:.9rem;">← Retour</a>
+
             <div class="form-actions">
-                <a href="/admin/etudiants" class="btn btn-secondary">Annuler</a>
+                <a href="<?= $backUrl ?>" class="btn btn-secondary">Annuler</a>
                 <button type="submit" class="btn btn-primary">
                     <?= $isEdit ? 'Enregistrer' : 'Créer l\'étudiant' ?>
                 </button>
