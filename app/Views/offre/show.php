@@ -189,6 +189,22 @@ function confirmerSuppressionOffre() {
     }
     if (confirm(msg)) document.getElementById('form-delete-offre').submit();
 }
+
+<!-- Toggle statut -->
+<form method="POST" action="/offres/<?= (int)$offre['Id_offre'] ?>/statut" style="display:inline;">
+    <input type="hidden" name="csrf_token"
+           value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+    <?php if (($offre['statut'] ?? 'active') === 'active'): ?>
+        <button type="submit" class="btn btn--secondary" style="font-size:.85rem;"
+                onclick="return confirm('Désactiver cette offre ?')">
+            ⏸ Désactiver
+        </button>
+    <?php else: ?>
+        <button type="submit" class="btn btn--primary" style="font-size:.85rem;">
+            ▶ Réactiver
+        </button>
+    <?php endif; ?>
+</form>
 </script>
 <?php endif; ?>
 </section>

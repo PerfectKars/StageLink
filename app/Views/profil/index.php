@@ -148,23 +148,27 @@ $role              = $_SESSION['user']['role'] ?? '';
                     </p>
 
                     <?php if ($role === 'admin'): ?>
-                    <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem;">
-                        <a href="/admin/etudiants"    class="btn btn--secondary">Gérer les étudiants</a>
-                        <a href="/admin/pilotes"       class="btn btn--secondary">Gérer les pilotes</a>
-                        <a href="/offres/create"       class="btn btn--secondary">Créer une offre</a>
-                        <a href="/entreprises/create"  class="btn btn--secondary">Créer une entreprise</a>
-                    </div>
-                    <?php endif; ?>
+<div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem;">
+    <a href="/admin/utilisateurs"   class="btn btn--secondary">Gérer les utilisateurs</a>
+    <a href="/offres/create"        class="btn btn--secondary">Créer une offre</a>
+    <a href="/entreprises/create"   class="btn btn--secondary">Créer une entreprise</a>
+    <a href="/admin/promotions/create" class="btn btn--secondary">Créer une promotion</a>
+</div>
+<?php endif; ?>
 
                     <?php if ($role === 'pilote'): ?>
-                    <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem;">
-                        <a href="/offres/create"      class="btn btn--secondary">Créer une offre</a>
-                        <a href="/entreprises/create" class="btn btn--secondary">Créer une entreprise</a>
-                    </div>
-                    <?php endif; ?>
+<div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem;">
+    <a href="/pilote/promotions"     class="btn btn--secondary">Mes promotions</a>
+    <a href="/offres/create"         class="btn btn--secondary">Créer une offre</a>
+    <a href="/entreprises/create"    class="btn btn--secondary">Créer une entreprise</a>
+</div>
+<?php endif; ?>
 
                     <?php if ($role === 'etudiant'): ?>
                     <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem;">
+                        <a href="/pilote/candidatures" class="btn btn--secondary">
+    Candidatures de ma promotion
+</a>
                         <a href="/mes-candidatures" class="btn btn--secondary">Toutes mes candidatures</a>
                         <a href="/wishlist"         class="btn btn--secondary">Ma wishlist</a>
                     </div>

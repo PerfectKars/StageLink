@@ -21,12 +21,14 @@ class OffreController extends BaseController
     public function index(): void
     {
         $filters = [
-            'titre'      => $_GET['titre']      ?? '',
-            'ville'      => $_GET['ville']      ?? '',
-            'competence' => $_GET['competence'] ?? '',
-        ];
+    'titre'       => $_GET['titre']        ?? '',
+    'ville'       => $_GET['ville']        ?? '',
+    'competences' => $_GET['competences']  ?? [],
+];
         $page   = max(1, (int) ($_GET['page'] ?? 1));
-        $offres = $this->offreModel->search($filters, $page, self::PER_PAGE);
+        $role         = $_SESSION['user']['role'] ?? '';
+        $toutesOffres = in_array($role, ['admin', 'pilote']);
+        $offres       = $this->offreModel->search($filters, $page, self::PER_PAGE, $toutesOffres);
         $total  = $this->offreModel->count();
 
         $this->render('offre/index', [
@@ -162,4 +164,26 @@ class OffreController extends BaseController
         $errors[] = 'Pour un stage de plus de 2 mois, la gratification minimale légale est de 4,50 €/h.';
     return $errors;
 }
+
+public function toggleStatut(string $id): void
+{
+    $this->requireRole('admin', 'pilote');
+    $this->verifyCsrf();
+
+    $offre = $this->offreModel->findByIdFull((int) $id);
+    if (!$offre) {
+        $this->redirect('/offres');
+        return;
+    }
+
+    $nouveauStatut = $offre['statut'] === 'active' ? 'inactive' : 'active';
+    $this->offreModel->updateStatut((int) $id, $nouveauStatut);
+
+    $_SESSION['flash_success'] = $nouveauStatut === 'active'
+        ? 'Offre réactivée.'
+        : 'Offre désactivée.';
+
+    $this->redirect('/offres/' . $id);
+}
+
 }
