@@ -178,51 +178,95 @@ class CandidatureController extends BaseController
         return ['nom' => $nom, 'chemin' => $chemin];
     }
 
-    /**
-     * GET /pilote/cv/:idOffre/:idEtudiant
-     * Sert le fichier CV de façon sécurisée (hors webroot).
-     */
-    public function telechargerCv(string $idOffre, string $idEtudiant): void
-    {
-        $this->requireRole('pilote', 'admin');
 
-        $idOffre    = (int) $idOffre;
-        $idEtudiant = (int) $idEtudiant;
-        $idUtil     = (int) ($_SESSION['user']['id'] ?? 0);
+    /** POST /candidatures/:idOffre/:idEtudiant/statut */
+public function updateStatut(string $idOffre, string $idEtudiant): void
+{
+    $this->requireRole('admin', 'pilote');
+    $this->verifyCsrf();
 
-        // Vérifier que l'étudiant appartient à la promotion du pilote (sauf admin)
-        if ($_SESSION['user']['role'] === 'pilote') {
-            if (!$this->candidatureModel->etudiantDansPromotion($idUtil, $idEtudiant)) {
-                http_response_code(403);
-                $this->render('error/403', ['title' => 'Accès refusé']);
-                return;
-            }
-        }
+    $statut = $_POST['statut'] ?? '';
+    $statuts = ['En attente', 'Entretien', 'Accepté', 'Refusé'];
 
-        // Récupérer le chemin du CV depuis la candidature
-        $stmt = $this->candidatureModel->getCvCandidature($idOffre, $idEtudiant);
-
-        if (!$stmt || empty($stmt['cv_chemin'])) {
-            http_response_code(404);
-            $this->render('error/404', ['title' => 'Fichier introuvable']);
-            return;
-        }
-
-        $chemin = $stmt['cv_chemin'];
-
-        if (!file_exists($chemin) || !is_readable($chemin)) {
-            http_response_code(404);
-            $this->render('error/404', ['title' => 'Fichier introuvable']);
-            return;
-        }
-
-        // Servir le fichier
-        $nomFichier = $stmt['cv_nom'] ?? 'cv.pdf';
-        header('Content-Type: application/pdf');
-        header('Content-Disposition: inline; filename="' . addslashes($nomFichier) . '"');
-        header('Content-Length: ' . filesize($chemin));
-        header('Cache-Control: private, no-cache');
-        readfile($chemin);
-        exit;
+    if (!in_array($statut, $statuts)) {
+        $this->redirect('/pilote/candidatures');
+        return;
     }
+
+    $this->candidatureModel->updateStatut((int) $idOffre, (int) $idEtudiant, $statut);
+    $_SESSION['flash_success'] = 'Statut mis à jour : ' . $statut;
+
+    $redirect = $_POST['redirect'] ?? '/pilote/candidatures';
+    $this->redirect($redirect);
+}
+
+/**
+ * GET /cv/:idCv
+ * Sert un CV de façon sécurisée pour étudiant, pilote et admin.
+ */
+public function telechargerCv(string $idCv): void
+{
+    $this->requireAuth();
+
+    $idCv          = (int) $idCv;
+    $idUtilisateur = (int) ($_SESSION['user']['id'] ?? 0);
+    $role          = $_SESSION['user']['role'] ?? '';
+
+    $cv = $this->candidatureModel->getCvById($idCv);
+
+    if (!$cv) {
+        http_response_code(404);
+        $this->render('error/404', ['title' => 'Fichier introuvable']);
+        return;
+    }
+
+    // Vérification des droits
+    if ($role === 'etudiant') {
+        // L'étudiant ne peut voir que ses propres CV
+        $idEtudiant = $this->candidatureModel->getIdEtudiant($idUtilisateur);
+        if ((int)$cv['Id_etudiant'] !== $idEtudiant) {
+            http_response_code(403);
+            $this->render('error/403', ['title' => 'Accès refusé']);
+            return;
+        }
+    } elseif ($role === 'pilote') {
+        // Le pilote ne peut voir que les CV des étudiants de sa promotion
+        if (!$this->candidatureModel->etudiantDansPromotion($idUtilisateur, (int)$cv['Id_etudiant'])) {
+            http_response_code(403);
+            $this->render('error/403', ['title' => 'Accès refusé']);
+            return;
+        }
+    }
+    // admin : accès total
+
+    $chemin = $cv['Chemin_fichier'];
+    if (empty($chemin) || !file_exists($chemin)) {
+        http_response_code(404);
+        $this->render('error/404', ['title' => 'Fichier introuvable']);
+        return;
+    }
+
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: inline; filename="' . addslashes($cv['Nom_fichier'] ?? 'cv.pdf') . '"');
+    header('Content-Length: ' . filesize($chemin));
+    header('Cache-Control: private, no-cache');
+    readfile($chemin);
+    exit;
+}
+
+public function confirmerStage(string $idOffre): void
+{
+    $this->requireRole('etudiant');
+    $this->verifyCsrf();
+
+    $idUtilisateur = (int) ($_SESSION['user']['id'] ?? 0);
+    $ok = $this->candidatureModel->confirmerStage($idUtilisateur, (int) $idOffre);
+
+    $_SESSION[$ok ? 'flash_success' : 'flash_error'] = $ok
+        ? '🎉 Félicitations ! Votre stage est confirmé. Vos autres candidatures ont été refusées automatiquement.'
+        : 'Une erreur est survenue.';
+
+    $this->redirect('/mes-candidatures');
+}
+
 }

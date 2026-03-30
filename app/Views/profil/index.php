@@ -31,7 +31,7 @@ $role              = $_SESSION['user']['role'] ?? '';
                     <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
                 <?php endif; ?>
 
-                <form method="POST" action="/profil" class="form">
+                <form method="POST" action="/profil" class="form" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token"
                            value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
 
@@ -59,6 +59,28 @@ $role              = $_SESSION['user']['role'] ?? '';
                         </label>
                         <input type="password" name="mot_de_passe" placeholder="••••••••">
                     </div>
+
+                    <?php if ($role === 'etudiant'): ?>
+<div class="form__group">
+    <?php $photo = $_SESSION['user']['photo'] ?? null; ?>
+    <?php if ($photo): ?>
+        <div style="margin-bottom:.75rem;">
+            <img src="/uploads/photos/<?= htmlspecialchars($photo) ?>"
+                 alt="Photo de profil"
+                 style="width:80px;height:80px;border-radius:50%;
+                        object-fit:cover;border:2px solid var(--border);">
+        </div>
+    <?php endif; ?>
+    <label>Photo de profil
+        <small style="color:var(--text-muted);font-weight:normal;">
+            — JPG/PNG/WEBP, max 2MB
+        </small>
+    </label>
+    <input type="file" name="photo"
+           accept="image/jpeg,image/png,image/webp"
+           class="form-input">
+</div>
+<?php endif; ?>
 
                     <button type="submit" class="btn btn--primary btn--full">Sauvegarder</button>
                 </form>
@@ -159,6 +181,7 @@ $role              = $_SESSION['user']['role'] ?? '';
                     <?php if ($role === 'pilote'): ?>
 <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem;">
     <a href="/pilote/promotions"     class="btn btn--secondary">Mes promotions</a>
+    <a href="/pilote/etudiants/create" class="btn btn--secondary">Créer un étudiant</a>
     <a href="/offres/create"         class="btn btn--secondary">Créer une offre</a>
     <a href="/entreprises/create"    class="btn btn--secondary">Créer une entreprise</a>
 </div>
@@ -166,9 +189,6 @@ $role              = $_SESSION['user']['role'] ?? '';
 
                     <?php if ($role === 'etudiant'): ?>
                     <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem;">
-                        <a href="/pilote/candidatures" class="btn btn--secondary">
-    Candidatures de ma promotion
-</a>
                         <a href="/mes-candidatures" class="btn btn--secondary">Toutes mes candidatures</a>
                         <a href="/wishlist"         class="btn btn--secondary">Ma wishlist</a>
                     </div>
