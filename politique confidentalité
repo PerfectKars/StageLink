@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Politique de Confidentialité</title>
+  <style>
+    body { font-family: Georgia, serif; max-width: 760px; margin: 0 auto; padding: 40px 24px; background: #fff; color: #111; font-size: 16px; line-height: 1.8; }
+    h1 { font-size: 1.8rem; margin-bottom: 4px; }
+    .date { color: #555; font-size: 14px; margin-bottom: 40px; }
+    h2 { font-size: 1.1rem; margin-top: 36px; margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
+    p { margin-bottom: 12px; }
+    ul { margin: 0 0 12px 20px; }
+    li { margin-bottom: 4px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th { text-align: left; padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; }
+    td { padding: 8px 12px; border: 1px solid #ddd; }
+    a { color: #111; }
+  </style>
+</head>
+<body>
+ 
+<h1>Politique de Confidentialité</h1>
+<p class="date">Dernière mise à jour : mars 2026</p>
+ 
+<h2>1. Responsable du traitement</h2>
+<p>Le responsable du traitement des données personnelles collectées sur ce site est :<br>
+<strong>StageLink</strong><br>
+Adresse : 10 rue du bois le chene le loup<br>
+Email : <a href="mailto:[stagelink@contact.co]">stagelink@contact.co</a></p>
+<p>Ce site a pour vocation de faciliter la recherche de stage. Nous collectons et traitons certaines données personnelles dans le respect du RGPD (UE 2016/679) et de la loi Informatique et Libertés.</p>
+ 
+<h2>2. Données collectées</h2>
+<table>
+  <thead><tr><th>Source</th><th>Données collectées</th></tr></thead>
+  <tbody>
+    <tr><td>Formulaire de contact</td><td>Nom, prénom, adresse email, message</td></tr>
+    <tr><td>Newsletter</td><td>Adresse email, préférences d'abonnement</td></tr>
+    <tr><td>Création de compte</td><td>Nom, prénom, email, mot de passe (chiffré), profil</td></tr>
+    <tr><td>Navigation</td><td>Cookies, pages visitées (voir politique cookies)</td></tr>
+  </tbody>
+</table>
+<p>Aucune donnée sensible (santé, origine ethnique, opinions politiques…) n'est collectée.</p>
+ 
+<h2>3. Finalités et bases légales</h2>
+<table>
+  <thead><tr><th>Finalité</th><th>Base légale</th></tr></thead>
+  <tbody>
+    <tr><td>Répondre aux demandes de contact</td><td>Intérêt légitime</td></tr>
+    <tr><td>Envoi de la newsletter</td><td>Consentement</td></tr>
+    <tr><td>Gestion du compte utilisateur</td><td>Exécution d'un contrat</td></tr>
+    <tr><td>Statistiques de navigation</td><td>Intérêt légitime</td></tr>
+    <tr><td>Obligations légales</td><td>Obligation légale</td></tr>
+  </tbody>
+</table>
+<p>Nous ne vendons, ne louons et ne cédons jamais vos données à des tiers à des fins commerciales.</p>
+ 
+<h2>4. Durée de conservation</h2>
+<table>
+  <thead><tr><th>Type de donnée</th><th>Durée</th></tr></thead>
+  <tbody>
+    <tr><td>Données de contact</td><td>3 ans après le dernier contact</td></tr>
+    <tr><td>Abonnement newsletter</td><td>Jusqu'au désabonnement + 1 an</td></tr>
+    <tr><td>Données de compte</td><td>Durée de vie du compte + 3 ans</td></tr>
+    <tr><td>Logs de connexion</td><td>12 mois</td></tr>
+  </tbody>
+</table>
+<p>À l'issue de ces délais, vos données sont supprimées ou anonymisées de manière irréversible.</p>
+ 
+<h2>5. Destinataires des données</h2>
+<ul>
+  <li><strong>Notre hébergeur</strong> — pour le stockage du site et des données</li>
+  <li><strong>Outil d'emailing</strong> — pour la newsletter et les emails transactionnels</li>
+  <li><strong>Outil d'analyse</strong> — pour les statistiques anonymes de navigation</li>
+  <li><strong>Autorités légales</strong> — si requis par la loi</li>
+</ul>
+<p>Tous nos prestataires sont conformes au RGPD et liés par un contrat de sous-traitance.</p>
+ 
+<h2>6. Vos droits</h2>
+<p>Conformément au RGPD, vous disposez des droits suivants :</p>
+<ul>
+  <li><strong>Droit d'accès</strong> — consulter les données que nous détenons sur vous</li>
+  <li><strong>Droit de rectification</strong> — corriger des données inexactes</li>
+  <li><strong>Droit à l'effacement</strong> — demander la suppression de vos données</li>
+  <li><strong>Droit à la limitation</strong> — limiter le traitement de vos données</li>
+  <li><strong>Droit à la portabilité</strong> — recevoir vos données dans un format lisible</li>
+  <li><strong>Droit d'opposition</strong> — vous opposer à certains traitements</li>
+</ul>
+<p>Pour exercer ces droits, contactez-nous à l'adresse ci-dessous. Nous répondons sous 30 jours. Vous pouvez également déposer une réclamation auprès de la <a href="https://www.cnil.fr" target="_blank">CNIL</a>.</p>
+ 
+<h2>7. Sécurité</h2>
+<ul>
+  <li>Connexion sécurisée via HTTPS/SSL</li>
+  <li>Mots de passe stockés sous forme chiffrée</li>
+  <li>Accès aux données limité au strict nécessaire</li>
+  <li>Sauvegardes régulières</li>
+</ul>
+ 
+<h2>8. Contact</h2>
+<p>Pour toute question ou pour exercer vos droits :<br>
+Email : <a href="mailto:[stagelink@contact.co]">stagelink@contact.co</a><br>
+Courrier : stagelink, 10 rue du bois du chene le lloup</p>
+ 
+</body>
+</html>
+ 
