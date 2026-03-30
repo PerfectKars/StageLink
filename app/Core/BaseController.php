@@ -44,4 +44,19 @@ abstract class BaseController
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
         exit;
     }
+
+    protected function verifyCsrf(): void
+{
+    $token = $_POST['csrf_token'] ?? '';
+    if (!hash_equals($_SESSION['csrf_token'] ?? '', $token)) {
+        http_response_code(403);
+        $this->render('error/403', ['title' => 'Accès refusé']);
+        exit;
+    }
+}
+
+protected function getFormData(): array
+{
+    return $_POST;
+}
 }

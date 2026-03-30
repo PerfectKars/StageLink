@@ -13,7 +13,7 @@ class Database
     {
         if (self::$instance === null) {
             $config = require ROOT_PATH . '/config/database.php';
-            $dsn = sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', $config['host'], $config['dbname']);
+            $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $config['host'], $config['port'] ?? '3306', $config['dbname']);
             try {
                 self::$instance = new PDO($dsn, $config['user'], $config['password'], [
                     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
