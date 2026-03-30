@@ -10,9 +10,9 @@ class OffreModel extends BaseModel
     protected string $table      = 'OFFRE';
     protected string $primaryKey = 'Id_offre';
 
-    public function search(array $filters = [], int $page = 1, int $perPage = 10): array
+    public function search(array $filters = [], int $page = 1, int $perPage = 10, bool $toutesOffres = false): array
     {
-        $where  = ["o.statut = 'active'"];
+        $where  = $toutesOffres ? [] : ["o.statut = 'active'"];
         $params = [];
 
         if (!empty($filters['titre'])) {
@@ -23,12 +23,18 @@ class OffreModel extends BaseModel
             $where[]          = "se.Ville LIKE :ville";
             $params[':ville'] = '%' . $filters['ville'] . '%';
         }
-        if (!empty($filters['competence'])) {
-            $where[]               = "c.Libelle LIKE :competence";
-            $params[':competence'] = '%' . $filters['competence'] . '%';
-        }
+        if (!empty($filters['competences'])) {
+    $comps = (array) $filters['competences'];
+    $placeholders = [];
+    foreach ($comps as $i => $comp) {
+        $key = ':comp' . $i;
+        $placeholders[]  = $key;
+        $params[$key]    = $comp;
+    }
+    $where[] = "c.Libelle IN (" . implode(',', $placeholders) . ")";
+}
 
-        $whereClause = implode(' AND ', $where);
+        $whereClause = !empty($where) ? implode(' AND ', $where) : '1=1';
         $offset      = ($page - 1) * $perPage;
 
         $sql = "
@@ -207,4 +213,10 @@ class OffreModel extends BaseModel
             if ($idComp > 0) $stmt->execute([':offre' => $idOffre, ':comp' => $idComp]);
         }
     }
+
+    public function updateStatut(int $id, string $statut): void
+{
+    $this->db->prepare("UPDATE OFFRE SET statut = :statut WHERE Id_offre = :id")
+             ->execute([':statut' => $statut, ':id' => $id]);
+}
 }
