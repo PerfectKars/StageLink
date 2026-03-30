@@ -23,7 +23,7 @@ $router->get('/offres/:id',                ['OffreController',       'show']);
 $router->get('/offres/:id/edit',           ['OffreController',       'editForm']);
 $router->post('/offres/:id/edit',          ['OffreController',       'edit']);
 $router->post('/offres/:id/delete',        ['OffreController',       'delete']);
-$router->post('/offres/:id/statut', ['OffreController', 'toggleStatut']);
+$router->post('/offres/:id/statut',        ['OffreController', 'toggleStatut']);
 
 // ── Entreprises ───────────────────────────────────────────────────────────────
 $router->get('/entreprises',               ['EntrepriseController',  'index']);
@@ -41,10 +41,12 @@ $router->post('/offres/:id/postuler', ['CandidatureController', 'postuler']);
 $router->get('/mes-candidatures',          ['CandidatureController', 'mesCandidatures']);
 $router->get('/pilote/candidatures',       ['CandidatureController', 'candidaturesPromotion']);
 $router->get('/pilote/candidatures/:id',   ['CandidatureController', 'detailCandidature']);
-$router->get('/pilote/cv/:idOffre/:idEtudiant', ['CandidatureController', 'telechargerCv']);
 $router->get('/pilote/promotions',       ['PiloteController', 'promotions']);
 $router->get('/pilote/promotions/:id',   ['PiloteController', 'promotion']);
 $router->get('/pilote/etudiants/:id',    ['PiloteController', 'etudiant']);
+$router->post('/candidatures/:idOffre/:idEtudiant/statut', ['CandidatureController', 'updateStatut']);
+$router->get('/cv/:idCv', ['CandidatureController', 'telechargerCv']);
+$router->post('/mes-candidatures/:idOffre/confirmer', ['CandidatureController', 'confirmerStage']);
 
 // ── Wishlist ──────────────────────────────────────────────────────────────────
 $router->get('/wishlist',        ['WishlistController', 'index']);
@@ -54,6 +56,11 @@ $router->post('/wishlist/remove',['WishlistController', 'remove']);
 // ── Profil ────────────────────────────────────────────────────────────────────
 $router->get('/profil',                    ['ProfilController',      'index']);
 $router->post('/profil',                   ['ProfilController',      'update']);
+$router->get('/uploads/photos/:fichier', ['ProfilController', 'servirPhoto']);
+
+// ── Pilotes ──────────────────────────────────────────────────────
+$router->get('/pilote/etudiants/create',  ['EtudiantController', 'createForm']);
+$router->post('/pilote/etudiants/create', ['EtudiantController', 'create']);
 
 // ── Admin : Utilisateurs ──────────────────────────────────────────────────────
 $router->get('/admin/utilisateurs',          ['AdminController', 'utilisateurs']);

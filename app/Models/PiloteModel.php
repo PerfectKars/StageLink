@@ -123,6 +123,7 @@ class PiloteModel extends BaseModel
         $stmt = $this->db->prepare("
             SELECT
                 p.Id_offre, p.Date_candidature, p.Statut, p.Lettre_motivation,
+                p.Id_cv,
                 o.titre                   AS Titre,
                 o.gratification_par_heure AS Base_remuneration,
                 o.duree_mois,

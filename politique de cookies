@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Politique de Cookies</title>
+  <style>
+    body { font-family: Georgia, serif; max-width: 760px; margin: 0 auto; padding: 40px 24px; background: #fff; color: #111; font-size: 16px; line-height: 1.8; }
+    h1 { font-size: 1.8rem; margin-bottom: 4px; }
+    .date { color: #555; font-size: 14px; margin-bottom: 40px; }
+    h2 { font-size: 1.1rem; margin-top: 36px; margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
+    p { margin-bottom: 12px; }
+    ul { margin: 0 0 12px 20px; }
+    li { margin-bottom: 4px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th { text-align: left; padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; }
+    td { padding: 8px 12px; border: 1px solid #ddd; }
+    a { color: #111; }
+  </style>
+</head>
+<body>
+ 
+<h1>Politique relative aux Cookies</h1>
+<p class="date">Dernière mise à jour : mars 2026</p>
+ 
+<h2>1. Qu'est-ce qu'un cookie ?</h2>
+<p>Un cookie est un petit fichier texte déposé sur votre terminal (ordinateur, smartphone, tablette) par le serveur d'un site web lors de votre visite. Il est ensuite renvoyé à chaque visite suivante pour mémoriser certaines informations vous concernant.</p>
+<p>Conformément à la directive ePrivacy et aux recommandations de la CNIL, certains cookies nécessitent votre consentement préalable. D'autres, strictement nécessaires au fonctionnement du site, sont déposés sans consentement.</p>
+ 
+<h2>2. Types de cookies utilisés</h2>
+<table>
+  <thead><tr><th>Type</th><th>Description</th><th>Consentement</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Essentiels</strong></td><td>Indispensables au fonctionnement du site (connexion, sécurité). Ne peuvent pas être désactivés.</td><td>Non requis</td></tr>
+    <tr><td><strong>Fonctionnels</strong></td><td>Mémorisent vos préférences (langue, affichage).</td><td>Requis</td></tr>
+    <tr><td><strong>Analytiques</strong></td><td>Mesurent l'audience du site de façon anonyme.</td><td>Requis</td></tr>
+    <tr><td><strong>Marketing</strong></td><td>Publicité personnalisée. Non utilisés sur ce site.</td><td>—</td></tr>
+  </tbody>
+</table>
+ 
+<h2>3. Liste des cookies</h2>
+<table>
+  <thead><tr><th>Nom</th><th>Type</th><th>Finalité</th><th>Durée</th></tr></thead>
+  <tbody>
+    <tr><td>session_id</td><td>Essentiel</td><td>Maintien de la session</td><td>Session</td></tr>
+    <tr><td>auth_token</td><td>Essentiel</td><td>Authentification au compte</td><td>30 jours</td></tr>
+    <tr><td>cookie_consent</td><td>Essentiel</td><td>Mémorisation de vos choix</td><td>13 mois</td></tr>
+    <tr><td>lang_pref</td><td>Fonctionnel</td><td>Mémorisation de la langue</td><td>12 mois</td></tr>
+    <tr><td>_ga, _gid</td><td>Analytique</td><td>Statistiques (Google Analytics)</td><td>13 mois / 24h</td></tr>
+  </tbody>
+</table>
+ 
+<h2>4. Bandeau de consentement</h2>
+<p>Lors de votre première visite, un bandeau s'affiche pour recueillir votre consentement. Conformément aux recommandations de la CNIL, refuser les cookies est aussi simple qu'accepter. Aucune action par défaut ne vaut acceptation.</p>
+ 
+<h2>5. Gérer vos préférences</h2>
+<p>Vous pouvez modifier vos préférences à tout moment via le lien "Gérer mes cookies" en bas de page, ou directement depuis votre navigateur :</p>
+<ul>
+  <li><a href="https://support.google.com/chrome/answer/95647" target="_blank">Chrome</a></li>
+  <li><a href="https://support.mozilla.org/fr/kb/cookies-informations-sites-enregistrent" target="_blank">Firefox</a></li>
+  <li><a href="https://support.apple.com/fr-fr/guide/safari/sfri11471/mac" target="_blank">Safari</a></li>
+  <li><a href="https://support.microsoft.com/fr-fr/microsoft-edge" target="_blank">Edge</a></li>
+</ul>
+<p>La désactivation de certains cookies essentiels peut affecter le bon fonctionnement du site.</p>
+ 
+<h2>6. Contact</h2>
+<p>Pour toute question concernant notre utilisation des cookies :<br>
+Email : <a href="mailto:[stagelink@contact.co]">stagelink@contact.co</a><br>
+En savoir plus : <a href="https://www.cnil.fr/fr/cookies-et-autres-traceurs/que-dit-la-loi" target="_blank">CNIL – Que dit la loi sur les cookies ?</a></p>
+ 
+</body>
+</html>
+ 

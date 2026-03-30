@@ -37,6 +37,9 @@
                     default     => 'background:var(--surface);color:var(--text-muted);',
                 };
                 ?>
+
+
+
                 <article class="card" style="padding:1.25rem 1.5rem;">
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;">
                         <div style="flex:1;">
@@ -55,6 +58,15 @@
                                 <?php if (!empty($c['duree_mois'])): ?>
                                     &nbsp;|&nbsp; 🗓 <?= (int)$c['duree_mois'] ?> mois
                                 <?php endif; ?>
+                                <?php if (!empty($c['cv_chemin'] ?? '') || !empty($c['cv_nom'] ?? '')): ?>
+    <div style="margin-top:.5rem;">
+        <a href="/mes-candidatures/cv/<?= (int)$c['Id_offre'] ?>"
+           target="_blank"
+           style="font-size:.82rem;color:var(--primary);">
+            📄 Voir mon CV →
+        </a>
+    </div>
+<?php endif; ?>
                                 <?php if (!empty($c['Base_remuneration'])): ?>
                                     &nbsp;|&nbsp; 💶 <?= number_format((float)$c['Base_remuneration'], 2) ?> €/h
                                 <?php endif; ?>

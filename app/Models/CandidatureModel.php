@@ -14,24 +14,28 @@ class CandidatureModel extends BaseModel
     {
         $stmt = $this->db->prepare("
             SELECT
-                p.Id_offre, p.Date_candidature, p.Statut, p.Lettre_motivation,
+                p.Id_offre, p.Id_cv AS cv_id, p.Date_candidature, p.Statut, p.Lettre_motivation,
                 o.titre                   AS Titre,
                 o.gratification_par_heure AS Base_remuneration,
                 o.duree_mois,
                 o.Id_entreprise,
                 e.Nom                     AS Nom_entreprise,
-                se.Ville
+                se.Ville,
+                cv.Chemin_fichier         AS cv_chemin,
+                cv.Nom_fichier            AS cv_nom
             FROM POSTULE p
-            JOIN ETUDIANT et          ON et.Id_etudiant    = p.Id_etudiant
-            JOIN OFFRE    o           ON o.Id_offre         = p.Id_offre
-            JOIN ENTREPRISE e         ON e.Id_entreprise    = o.Id_entreprise
-            LEFT JOIN SITE_ENTREPRISE se ON se.Id_site      = o.Id_site
+            JOIN ETUDIANT et             ON et.Id_etudiant   = p.Id_etudiant
+            JOIN OFFRE    o              ON o.Id_offre        = p.Id_offre
+            JOIN ENTREPRISE e            ON e.Id_entreprise  = o.Id_entreprise
+            LEFT JOIN SITE_ENTREPRISE se ON se.Id_site       = o.Id_site
+            LEFT JOIN CV cv              ON cv.Id_cv         = p.Id_cv
             WHERE et.Id_utilisateur = :id
             ORDER BY p.Date_candidature DESC
         ");
         $stmt->execute([':id' => $idUtilisateur]);
         return $stmt->fetchAll();
     }
+    
 
     /**
      * Candidatures de tous les étudiants des promotions du pilote.
@@ -117,24 +121,25 @@ class CandidatureModel extends BaseModel
     public function getByEtudiantId(int $idEtudiant): array
     {
         $stmt = $this->db->prepare("
-            SELECT
-                p.Id_offre, p.Date_candidature, p.Statut, p.Lettre_motivation,
-                o.titre                   AS Titre,
-                o.gratification_par_heure AS Base_remuneration,
-                o.duree_mois,
-                o.Id_entreprise,
-                e.Nom                     AS Nom_entreprise,
-                se.Ville,
-                cv.Chemin_fichier         AS cv_chemin,
-                cv.Nom_fichier            AS cv_nom
-            FROM POSTULE p
-            JOIN OFFRE o               ON o.Id_offre        = p.Id_offre
-            JOIN ENTREPRISE e          ON e.Id_entreprise   = o.Id_entreprise
-            LEFT JOIN SITE_ENTREPRISE se ON se.Id_site      = o.Id_site
-            LEFT JOIN CV cv            ON cv.Id_cv          = p.Id_cv
-            WHERE p.Id_etudiant = :id
-            ORDER BY p.Date_candidature DESC
-        ");
+    SELECT
+        p.Id_offre, p.Id_cv AS cv_id, p.Date_candidature, p.Statut, p.Lettre_motivation,
+        o.titre                   AS Titre,
+        o.gratification_par_heure AS Base_remuneration,
+        o.duree_mois,
+        o.Id_entreprise,
+        e.Nom                     AS Nom_entreprise,
+        se.Ville,
+        cv.Chemin_fichier         AS cv_chemin,
+        cv.Nom_fichier            AS cv_nom
+    FROM POSTULE p
+    JOIN ETUDIANT et            ON et.Id_etudiant   = p.Id_etudiant
+    JOIN OFFRE    o             ON o.Id_offre        = p.Id_offre
+    JOIN ENTREPRISE e           ON e.Id_entreprise  = o.Id_entreprise
+    LEFT JOIN SITE_ENTREPRISE se ON se.Id_site       = o.Id_site
+    LEFT JOIN CV cv             ON cv.Id_cv          = p.Id_cv
+    WHERE et.Id_utilisateur = :id
+    ORDER BY p.Date_candidature DESC
+");
         $stmt->execute([':id' => $idEtudiant]);
         return $stmt->fetchAll();
     }
@@ -253,4 +258,66 @@ public function getCvCandidature(int $idOffre, int $idEtudiant): array|false
     $stmt->execute([':offre' => $idOffre, ':etudiant' => $idEtudiant]);
     return $stmt->fetch();
 }
+
+public function updateStatut(int $idOffre, int $idEtudiant, string $statut): void
+{
+    $this->db->prepare("
+        UPDATE POSTULE SET Statut = :statut
+        WHERE Id_offre = :offre AND Id_etudiant = :etudiant
+    ")->execute([
+        ':statut'   => $statut,
+        ':offre'    => $idOffre,
+        ':etudiant' => $idEtudiant,
+    ]);
+}
+
+public function getCvById(int $idCv): array|false
+{
+    $stmt = $this->db->prepare(
+        "SELECT Id_cv, Nom_fichier, Chemin_fichier, Id_etudiant FROM CV WHERE Id_cv = :id"
+    );
+    $stmt->execute([':id' => $idCv]);
+    return $stmt->fetch();
+}
+
+public function confirmerStage(int $idUtilisateur, int $idOffre): bool
+{
+    $idEtudiant = $this->getIdEtudiant($idUtilisateur);
+    if (!$idEtudiant) return false;
+
+    // Confirmer cette candidature
+    $this->db->prepare("
+        UPDATE POSTULE SET Statut = 'Confirmé'
+        WHERE Id_offre = :offre AND Id_etudiant = :etudiant
+    ")->execute([':offre' => $idOffre, ':etudiant' => $idEtudiant]);
+
+    // Refuser toutes les autres candidatures de l'étudiant
+    $this->db->prepare("
+        UPDATE POSTULE SET Statut = 'Refusé'
+        WHERE Id_etudiant = :etudiant
+        AND Id_offre != :offre
+        AND Statut NOT IN ('Refusé', 'Confirmé')
+    ")->execute([':etudiant' => $idEtudiant, ':offre' => $idOffre]);
+
+    // Mettre Statut_recherche à "Stage trouvé"
+    $this->db->prepare("
+        UPDATE ETUDIANT SET Statut_recherche = 'Stage trouvé'
+        WHERE Id_etudiant = :etudiant
+    ")->execute([':etudiant' => $idEtudiant]);
+
+    return true;
+}
+
+public function getStatutCandidature(int $idUtilisateur, int $idOffre): string|null
+{
+    $stmt = $this->db->prepare("
+        SELECT p.Statut FROM POSTULE p
+        JOIN ETUDIANT e ON e.Id_etudiant = p.Id_etudiant
+        WHERE e.Id_utilisateur = :id AND p.Id_offre = :offre
+    ");
+    $stmt->execute([':id' => $idUtilisateur, ':offre' => $idOffre]);
+    $result = $stmt->fetchColumn();
+    return $result ?: null;
+}
+
 }

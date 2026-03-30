@@ -67,6 +67,26 @@ $baseUrl = 'https://stagelink.local';
                         </span>
                     </div>
 
+                    <!-- Modifier statut -->
+<form method="POST"
+      action="/candidatures/<?= (int)$c['Id_offre'] ?>/<?= (int)$etudiant['Id_etudiant'] ?>/statut"
+      style="display:inline-flex;align-items:center;gap:.5rem;margin-top:.75rem;">
+    <input type="hidden" name="csrf_token"
+           value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+    <input type="hidden" name="redirect"
+           value="/pilote/etudiants/<?= (int)$etudiant['Id_etudiant'] ?>">
+    <select name="statut" class="form-input" style="font-size:.82rem;padding:.3rem .6rem;width:auto;">
+        <?php foreach (['En attente','Entretien','Accepté','Refusé'] as $s): ?>
+            <option value="<?= $s ?>" <?= $statut === $s ? 'selected' : '' ?>>
+                <?= $s ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <button type="submit" class="btn btn--primary" style="font-size:.78rem;padding:.3rem .7rem;">
+        Mettre à jour
+    </button>
+</form>
+
                     <!-- Fichiers joints -->
                     <div style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap;">
                         <?php if (!empty($c['cv_chemin']) && file_exists($c['cv_chemin'])): ?>
