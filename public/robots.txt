@@ -1,0 +1,32 @@
+# StageLink robots.txt
+# Configuration pour les crawlers (Google, Bing, etc.)
+
+User-agent: *
+Allow: /
+Allow: /offres
+Allow: /offres/*
+Allow: /entreprises
+Allow: /entreprises/*
+Allow: /login
+Allow: /mentions-legales
+
+# Pages sensibles à ignorer
+Disallow: /admin/
+Disallow: /uploads/
+Disallow: /uploads/candidatures/
+Disallow: /pilote/
+Disallow: /profil
+Disallow: /mes-candidatures
+Disallow: /wishlist
+Disallow: /pilote/candidatures
+
+# Paramètres dynamiques à ignorer
+Disallow: /*?*sort=
+Disallow: /*?*filter=
+Disallow: /*?*page=
+
+# Sitemap
+Sitemap: https://stagelink.com/sitemap.xml
+
+# Délai de crawl (optionnel)
+Crawl-delay: 1

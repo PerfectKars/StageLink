@@ -1,6 +1,9 @@
 Options -Indexes
-
 RewriteEngine On
+
+# Exception pour robots.txt et sitemap.xml
+RewriteRule ^(robots\.txt|sitemap\.xml)$ - [L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
