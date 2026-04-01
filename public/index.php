@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 // Chargement .env
-$envFile = dirname(__DIR__, 2) . '/.env';
+$envFile = dirname(__DIR__) . '/.env';
 if (file_exists($envFile)) {
     foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
         if (str_starts_with(trim($line), '#')) continue;
