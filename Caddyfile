@@ -1,0 +1,5 @@
+stagelink.local {
+    root * /home/kilic/StageLink/public
+    php_fastcgi localhost:8000
+    file_server
+}
