@@ -14,13 +14,17 @@
             <p style="font-size:2rem;font-weight:800;color:#10b981;margin:0;">
                 <?= (int)($stats['actives'] ?? 0) ?>
             </p>
-            <p style="font-size:.85rem;color:var(--text-muted);margin:.25rem 0 0;">Offres actives</p>
+            <p style="font-size:.85rem;color:var(--text-muted);margin:.25rem 0 0;">
+    <span class="dot dot-active"></span> Offres actives
+</p>
         </div>
         <div class="card" style="padding:1.25rem;text-align:center;">
             <p style="font-size:2rem;font-weight:800;color:#6366f1;margin:0;">
                 <?= (int)($stats['total'] ?? 0) - (int)($stats['actives'] ?? 0) ?>
             </p>
-            <p style="font-size:.85rem;color:var(--text-muted);margin:.25rem 0 0;">Offres inactives</p>
+            <p style="font-size:.85rem;color:var(--text-muted);margin:.25rem 0 0;">
+    <span class="dot dot-inactive"></span> Offres inactives
+</p>
         </div>
     </div>
 

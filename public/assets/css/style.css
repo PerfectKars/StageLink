@@ -172,8 +172,18 @@ ul { list-style: none; }
 
 /* ── Hero ──────────────────────────────────────────────────────────────────── */
 .hero {
+    /* Fond avec gradient et image locale */
+    background: linear-gradient(rgba(79,70,229,0.7), rgba(79,70,229,0.7)),
+                url('/assets/img/team_work.jpg'); /* chemin vers l'image dans public */
+    background-size: cover;
+    background-position: center;
+
+    /* Couleurs et texte */
+    color: white;
+    text-align: center;
+
+    /* Padding conservé */
     padding: 3.5rem 0 2.5rem;
-    background: var(--surface);
     border-bottom: 1px solid var(--border);
 }
 
@@ -182,15 +192,17 @@ ul { list-style: none; }
     font-size: clamp(2rem, 5vw, 3.2rem);
     font-weight: 800;
     line-height: 1.15;
-    color: var(--text);
+    color: white;
     margin-bottom: 1rem;
 }
 
 .hero__sub {
     font-size: 1rem;
-    color: var(--text-muted);
+    color: rgba(255,255,255,0.85);
     margin-bottom: 2rem;
     max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .hero__search {
@@ -268,6 +280,12 @@ ul { list-style: none; }
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1rem;
+}
+
+.carte-grid_1 {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.5rem;
 }
 
 /* ── Card offre ────────────────────────────────────────────────────────────── */
@@ -355,7 +373,7 @@ ul { list-style: none; }
 .form__group textarea {
     width: 100%;
     padding: .75rem 1rem;
-    border: 1.5px solid var(--border);
+    border: 2px solid var(--border);
     border-radius: var(--radius-sm);
     font-family: var(--font-body);
     font-size: .95rem;
@@ -395,6 +413,14 @@ ul { list-style: none; }
     justify-content: center;
     padding: 2rem 1.25rem;
     background: var(--bg);
+    height: 100vh; /* prend toute la hauteur de l'écran */
+    background-image: url('/assets/img/team_work.jpg'); /* remplace par le chemin de ton image */
+    background-size: cover;       /* l'image remplit tout l'espace */
+    background-position: center;  /* centre l'image */
+    background-repeat: no-repeat; /* pas de répétition de l'image */
+    background-color: rgba(50, 100, 200, 0.6); /* bleu plus doux, moins flashy */
+    background-blend-mode: overlay;
+
 }
 
 .auth-card {
@@ -876,24 +902,20 @@ fieldset.form-group legend {
     }
 }
 
-/* =============================================================================
-   Page Formulaire Entreprise (créer / modifier)
-   ============================================================================= */
-
-/* Sous-titres de section dans le formulaire */
-.form-section-title {
-    font-family: var(--font-head);
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 1rem;
-    padding-bottom: .5rem;
-    border-bottom: 1px solid var(--border);
+.dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
 }
 
-/* Bouton ajouter un site supplémentaire */
-#btn-ajouter-site:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-    background: var(--primary-light);
+/* Vert vif */
+.dot-active {
+    background-color: #22c55e;
+}
+
+/* Rouge vif */
+.dot-inactive {
+    background-color: #ef4444;
 }
