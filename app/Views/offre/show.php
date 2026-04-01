@@ -102,22 +102,31 @@ $userRole      = $_SESSION['user']['role'] ?? '';
             </div>
 
             <?php if (!empty($offre['competences'])): ?>
-            <div class="offre-detail__section mb-2">
-                <h2>Compétences requises</h2>
-                <div class="card__tags">
-                    <?php foreach ($offre['competences'] as $comp): ?>
-                        <span class="tag">
-                            <?= htmlspecialchars($comp['Nom_competence'] ?? $comp['Libelle'] ?? '', ENT_QUOTES, 'UTF-8') ?>
-                        </span>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            <?php endif; ?>
+<div class="offre-detail__section mb-2">
+    <h2>Compétences requises</h2>
 
-            <div class="offre-detail__section">
-                <h2>Description du stage</h2>
-                <p><?= nl2br(htmlspecialchars($offre['Description'] ?? '', ENT_QUOTES, 'UTF-8')) ?></p>
-            </div>
+    <div class="card__tags" id="competences-list">
+
+        <?php 
+        $max = 3;
+        $total = count($offre['competences']);
+        ?>
+
+        <?php foreach ($offre['competences'] as $index => $comp): ?>
+            <span class="tag competence-item <?= $index >= $max ? 'hidden' : '' ?>">
+                <?= htmlspecialchars($comp['Nom_competence'] ?? $comp['Libelle'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+            </span>
+        <?php endforeach; ?>
+
+        <?php if ($total > $max): ?>
+            <span class="tag more-btn" onclick="toggleCompetences()">
+                +<?= $total - $max ?> voir plus
+            </span>
+        <?php endif; ?>
+
+    </div>
+</div>
+<?php endif; ?>
 
 
 
@@ -270,3 +279,14 @@ function confirmerSuppressionOffre() {
 </script>
 <?php endif; ?>
 </section>
+
+
+<script>
+function toggleCompetences() {
+    const items = document.querySelectorAll('.competence-item.hidden');
+    items.forEach(el => el.classList.remove('hidden'));
+
+    const btn = document.querySelector('.more-btn');
+    if (btn) btn.style.display = 'none';
+}
+</script>

@@ -919,3 +919,12 @@ fieldset.form-group legend {
 .dot-inactive {
     background-color: #ef4444;
 }
+
+.hidden {
+    display: none;
+}
+
+.more-btn {
+    background: #e5e7eb;
+    cursor: pointer;
+}
