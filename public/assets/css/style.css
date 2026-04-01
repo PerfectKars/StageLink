@@ -901,3 +901,21 @@ fieldset.form-group legend {
         justify-content: center;
     }
 }
+
+.dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+/* Vert vif */
+.dot-active {
+    background-color: #22c55e;
+}
+
+/* Rouge vif */
+.dot-inactive {
+    background-color: #ef4444;
+}
