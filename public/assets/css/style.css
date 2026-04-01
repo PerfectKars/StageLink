@@ -664,3 +664,214 @@ ul { list-style: none; }
     color: #fff;
     background: var(--primary-dark);
 }
+
+
+
+/* =============================================================================
+   Page Formulaire Offre (créer / modifier)
+   ============================================================================= */
+
+/* Carte principale du formulaire */
+.form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 720px;
+    box-shadow: var(--shadow);
+}
+
+/* Titre de la page */
+.form-title {
+    font-family: var(--font-head);
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 1.75rem;
+    color: var(--text);
+}
+
+/* Groupe label + input */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    margin-bottom: 1.1rem;
+}
+
+.form-label {
+    font-size: .88rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.form-label span {
+    color: var(--primary);
+}
+
+/* Inputs, selects, textareas */
+.form-input {
+    width: 100%;
+    padding: .75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: .95rem;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.form-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(91,79,232,.1);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+textarea.form-input {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Fieldset compétences */
+.form-group fieldset,
+fieldset.form-group {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+}
+
+fieldset.form-group legend {
+    font-size: .88rem;
+    font-weight: 600;
+    color: var(--text);
+    padding: 0 .4rem;
+}
+
+/* Grille des checkboxes */
+.competences-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem .75rem;
+    margin-top: .5rem;
+}
+
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .9rem;
+    color: var(--text);
+    cursor: pointer;
+    padding: .35rem .75rem;
+    border: 1.5px solid var(--border);
+    border-radius: 99px;
+    transition: all .15s;
+}
+
+.checkbox-label:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.checkbox-label input[type="checkbox"] {
+    accent-color: var(--primary);
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+.checkbox-label:has(input:checked) {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* Boutons Annuler / Enregistrer */
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .75rem;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+}
+
+/* Mapping btn-primary / btn-secondary → classes existantes */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: .75rem 1.5rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: .95rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .2s ease;
+    background: var(--primary);
+    color: #fff;
+}
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: .75rem 1.5rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: .95rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .2s ease;
+    background: var(--primary-light);
+    color: var(--primary);
+    text-decoration: none;
+}
+.btn-secondary:hover { background: #dde4ff; }
+
+/* Alerte erreurs */
+.alert-danger {
+    background: #FEE2E2;
+    color: #DC2626;
+    border: 1px solid #FCA5A5;
+    padding: .85rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: .9rem;
+    margin-bottom: 1.25rem;
+}
+.alert-danger ul { padding-left: 1.25rem; list-style: disc; }
+
+/* Responsive mobile */
+@media (max-width: 640px) {
+    .form-card {
+        padding: 1.25rem;
+        margin: 1rem auto;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .form-actions .btn-primary,
+    .form-actions .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}
