@@ -1,3 +1,13 @@
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StageLink</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="Logo.webp" type="image/png">
+</head>
+
 <section class="hero">
     <div class="container">
         <h1>Trouvez votre stage idéal</h1>
