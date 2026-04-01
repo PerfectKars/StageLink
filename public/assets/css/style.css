@@ -875,3 +875,25 @@ fieldset.form-group legend {
         justify-content: center;
     }
 }
+
+/* =============================================================================
+   Page Formulaire Entreprise (créer / modifier)
+   ============================================================================= */
+
+/* Sous-titres de section dans le formulaire */
+.form-section-title {
+    font-family: var(--font-head);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Bouton ajouter un site supplémentaire */
+#btn-ajouter-site:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+}
