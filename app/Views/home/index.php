@@ -1,13 +1,3 @@
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StageLink</title>
-
-  <!-- Favicon -->
-  <link rel="icon" href="Logo.webp" type="image/png">
-</head>
-
 <section class="hero">
     <div class="container">
         <h1>Trouvez votre stage idéal</h1>
@@ -43,12 +33,12 @@
         <div class="carte-grid_1">
             
     <div class="card">
-        <h3><?= $nbEntreprises ?> entreprises</h3></br>
+        <h3>🏢 <?= $nbEntreprises ?> entreprises</h3></br>
         <p>Plus de <?= $nbEntreprises ?> entreprises partenaires nous font confiance pour proposer des stages de qualité aux étudiants.</p>
 </div>
 
 <div class="card">
-    <h3><?= $nbOffres ?> stages</h3></br>
+    <h3>🎓 <?= $nbOffres ?> stages</h3></br>
     <p>
         Découvrez <?= $nbOffres ?> offres de stage disponibles dans divers domaines 
         et trouvez celle qui correspond à votre profil.
@@ -56,7 +46,7 @@
 </div>
 
             <div class="card">
-                <h3>Simple & rapide</h3></br>
+                <h3>💻 Simple & rapide</h3></br>
                 <p>Trouvez facilement le stage qui vous correspond grâce à une plateforme claire et intuitive.En quelques clics, accédez aux meilleures opportunités près de chez vous.</p>
             </div>
 
@@ -67,7 +57,7 @@
 
 <section class="section">
     <div class="container">
-        <h2>Dernières offres publiées</h2></br>
+        <h2>📝 Dernières offres publiées</h2></br>
         <div class="cards-grid">
             <?php foreach ($dernieresOffres as $offre): ?>
     <article class="card">
