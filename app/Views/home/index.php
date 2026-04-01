@@ -33,12 +33,12 @@
         <div class="carte-grid_1">
             
     <div class="card">
-        <h3><?= $nbEntreprises ?> entreprises</h3>
+        <h3><?= $nbEntreprises ?> entreprises</h3></br>
         <p>Plus de <?= $nbEntreprises ?> entreprises partenaires nous font confiance pour proposer des stages de qualité aux étudiants.</p>
 </div>
 
 <div class="card">
-    <h3><?= $nbOffres ?> stages</h3>
+    <h3><?= $nbOffres ?> stages</h3></br>
     <p>
         Découvrez <?= $nbOffres ?> offres de stage disponibles dans divers domaines 
         et trouvez celle qui correspond à votre profil.
@@ -57,7 +57,7 @@
 
 <section class="section">
     <div class="container">
-        <h2>Dernières offres publiées</h2>
+        <h2>Dernières offres publiées</h2></br>
         <div class="cards-grid">
             <?php foreach ($dernieresOffres as $offre): ?>
     <article class="card">

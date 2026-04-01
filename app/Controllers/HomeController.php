@@ -29,4 +29,21 @@ class HomeController extends BaseController
             'title' => 'Mentions légales',
         ]);
     }
+
+    public function cookies(): void
+    {
+        $this->render('home/cookies', [
+            'title' => 'Cookies',
+        ]);
+    }
+
+    public function nousContacter(): void
+    {
+        $this->render('home/nous_contacter', [
+            'title' => 'Nous contacter',
+        ]);
+    }
+
+    
+  
 }
