@@ -77,7 +77,7 @@
         </p>
     </article>
 <?php endforeach; ?>
-        </div>
+        </div><br>
         <div class="text-center">
             <a href="/offres" class="btn btn--outline">Voir toutes les offres</a>
         </div>
