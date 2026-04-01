@@ -8,6 +8,53 @@
     </div>
 </section>
 
+<section class="section" style="background:#f9fafb;">
+  <div class="container">
+    <h2>À propos de nous</h2></br>
+    <p>
+      Notre plateforme est dédiée à la recherche de stages pour les étudiants et jeunes diplômés. Nous mettons en relation
+      des candidats motivés avec des entreprises partenaires dans de nombreux secteurs d’activité.
+    </p>
+    <p>
+      Grâce à une interface simple et intuitive, vous pouvez parcourir des offres actuelles, filtrer selon vos critères
+      (ville, durée, rémunération) et postuler facilement.
+    </p>
+    <p>
+      Notre objectif est de faciliter votre insertion professionnelle en vous aidant à trouver le stage qui correspond
+      à votre profil et à vos ambitions.
+    </p>
+  </div>
+</section>
+
+<section class="stats">
+
+<div class="container">
+        
+        <div class="carte-grid_1">
+            
+    <div class="card">
+        <h3><?= $nbEntreprises ?> entreprises</h3>
+        <p>Plus de <?= $nbEntreprises ?> entreprises partenaires nous font confiance pour proposer des stages de qualité aux étudiants.</p>
+</div>
+
+<div class="card">
+    <h3><?= $nbOffres ?> stages</h3>
+    <p>
+        Découvrez <?= $nbOffres ?> offres de stage disponibles dans divers domaines 
+        et trouvez celle qui correspond à votre profil.
+    </p>
+</div>
+
+            <div class="card">
+                <h3>Simple & rapide</h3></br>
+                <p>Trouvez facilement le stage qui vous correspond grâce à une plateforme claire et intuitive.En quelques clics, accédez aux meilleures opportunités près de chez vous.</p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
 <section class="section">
     <div class="container">
         <h2>Dernières offres publiées</h2>

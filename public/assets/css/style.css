@@ -172,8 +172,18 @@ ul { list-style: none; }
 
 /* ── Hero ──────────────────────────────────────────────────────────────────── */
 .hero {
+    /* Fond avec gradient et image locale */
+    background: linear-gradient(rgba(79,70,229,0.7), rgba(79,70,229,0.7)),
+                url('/assets/img/team_work.jpg'); /* chemin vers l'image dans public */
+    background-size: cover;
+    background-position: center;
+
+    /* Couleurs et texte */
+    color: white;
+    text-align: center;
+
+    /* Padding conservé */
     padding: 3.5rem 0 2.5rem;
-    background: var(--surface);
     border-bottom: 1px solid var(--border);
 }
 
@@ -182,15 +192,17 @@ ul { list-style: none; }
     font-size: clamp(2rem, 5vw, 3.2rem);
     font-weight: 800;
     line-height: 1.15;
-    color: var(--text);
+    color: white;
     margin-bottom: 1rem;
 }
 
 .hero__sub {
     font-size: 1rem;
-    color: var(--text-muted);
+    color: rgba(255,255,255,0.85);
     margin-bottom: 2rem;
     max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .hero__search {
@@ -268,6 +280,12 @@ ul { list-style: none; }
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1rem;
+}
+
+.carte-grid_1 {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.5rem;
 }
 
 /* ── Card offre ────────────────────────────────────────────────────────────── */
