@@ -87,10 +87,6 @@ Accède à l'application : http://localhost:8000
 
 🌐 Base de données (Production)
 La base de données est hébergée sur Railway.app.
-Commande de connexion exemple :
-Bashmariadb -u root -p'mreFNilXZGCVkKaZCwSRCwTtetCTjPYQ' \
-  -h gondola.proxy.rlwy.net -P 33783 --ssl=0 railway
-Attention : Ne jamais committer les identifiants en dur dans le code. Utilise des variables d'environnement en production.
 
 🔑 Routes principales
 
