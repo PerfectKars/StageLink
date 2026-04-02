@@ -87,10 +87,6 @@ Accède à l'application : http://localhost:8000
 
 🌐 Base de données (Production)
 La base de données est hébergée sur Railway.app.
-Commande de connexion exemple :
-Bashmariadb -u root -p'mreFNilXZGCVkKaZCwSRCwTtetCTjPYQ' \
-  -h gondola.proxy.rlwy.net -P 33783 --ssl=0 railway
-Attention : Ne jamais committer les identifiants en dur dans le code. Utilise des variables d'environnement en production.
 
 🔑 Routes principales
 
@@ -109,26 +105,3 @@ Le projet inclut des tests unitaires avec PHPUnit.
 Exécuter les tests :
 Bashvendor/bin/phpunit
 Fichier de configuration : phpunit.xml
-
-🔒 Sécurité
-
-Protection CSRF sur les formulaires POST
-Validation des entrées
-Hashage des mots de passe (bcrypt)
-Vérification des rôles (requireRole())
-Utilisation de prepared statements (PDO)
-
-
-📌 À faire / Améliorations possibles
-
-Finaliser le module Entreprises complet
-Ajouter un système de notifications
-Export des listes (PDF/Excel)
-Amélioration de l'interface (design responsive)
-Tests unitaires plus complets
-Mise en place d'un .env pour la configuration
-
-
-👥 Contributeurs
-
-Développeur principal : PerfectKars
