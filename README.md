@@ -127,8 +127,3 @@ Export des listes (PDF/Excel)
 Amélioration de l'interface (design responsive)
 Tests unitaires plus complets
 Mise en place d'un .env pour la configuration
-
-
-👥 Contributeurs
-
-Développeur principal : PerfectKars
