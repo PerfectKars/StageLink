@@ -23,44 +23,70 @@ class AuthController extends BaseController
     }
 
     public function login(): void
-    {
-        $this->verifyCsrf();
+{
+    $this->verifyCsrf();
 
-        $email    = trim($_POST['email']    ?? '');
-        $password = trim($_POST['password'] ?? '');
+    $email    = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-        $user = $this->userModel->authenticate($email, $password);
-        // DEBUG TEMPORAIRE — à supprimer après
-$raw = $this->userModel->findByEmail($email);
+    $user = $this->userModel->authenticate($email, $password);
 
-        if (!$user) {
-            $this->render('auth/login', [
-                'title' => 'Connexion',
-                'error' => 'Email ou mot de passe incorrect.',
-            ]);
-            return;
+    if (!$user) {
+        $this->render('auth/login', [
+            'title' => 'Connexion',
+            'error' => 'Email ou mot de passe incorrect.',
+        ]);
+        return;
+    }
+
+    // Régénération de l'ID de session (sécurité)
+    session_regenerate_id(true);
+
+    // Stockage session de base
+    $_SESSION['user'] = [
+        'id'          => (int) $user['Id_utilisateur'],
+        'id_etudiant' => null,                    // ← important
+        'nom'         => $user['nom'] ?? '',
+        'prenom'      => $user['prenom'] ?? '',
+        'email'       => $user['Email'],
+        'role'        => $user['Role'],
+    ];
+
+    // Si c'est un étudiant, on récupère son Id_etudiant
+    if ($user['Role'] === 'etudiant') {
+        $db = \App\Core\Database::getInstance();
+
+        $stmt = $db->prepare("
+            SELECT Id_etudiant 
+            FROM ETUDIANT 
+            WHERE Id_utilisateur = :id_utilisateur
+            LIMIT 1
+        ");
+        $stmt->execute([':id_utilisateur' => $user['Id_utilisateur']]);
+        $idEtudiant = $stmt->fetchColumn();
+
+        if ($idEtudiant !== false) {
+            $_SESSION['user']['id_etudiant'] = (int) $idEtudiant;
         }
-
-        // Régénération de l'ID de session (prévention fixation de session)
-        session_regenerate_id(true);
-
-        // Stockage session — clés normalisées en minuscules
-        $_SESSION['user'] = [
-            'id'     => (int) $user['Id_utilisateur'],
-            'nom'    => $user['nom']    ?? '',
-            'prenom' => $user['prenom'] ?? '',
-            'email'  => $user['Email'],
-            'role'   => $user['Role'],   // 'admin' | 'pilote' | 'etudiant'
-        ];
-
-        $this->redirect('/');
     }
 
-    public function logout(): void
-    {
+    $_SESSION['flash_success'] = 'Connexion réussie !';
+    $this->redirect('/');
+}
+
+public function logout(): void
+{
+    if (session_status() === PHP_SESSION_ACTIVE) {
         session_destroy();
-        header('Clear-Site-Data: "cache", "cookies"');
-        $this->redirect('/login');
     }
+    
+    // Nettoyage des cookies de session
+    if (isset($_COOKIE[session_name()])) {
+        setcookie(session_name(), '', time() - 3600, '/');
+    }
+
+    header('Clear-Site-Data: "cache", "cookies"');
+    $this->redirect('/login');
+}
 
 }

@@ -10,79 +10,92 @@ class EntrepriseModel extends BaseModel
     protected string $table      = 'ENTREPRISE';
     protected string $primaryKey = 'Id_entreprise';
 
+    
     public function search(array $filters = [], int $page = 1, int $perPage = 10): array
-    {
-        $where  = ['1=1'];
-        $params = [];
+{
+    $where  = ['1=1'];
+    $params = [];
 
-        if (!empty($filters['nom'])) {
-            $where[]        = 'e.Nom LIKE :nom';
-            $params[':nom'] = '%' . $filters['nom'] . '%';
-        }
-        if (!empty($filters['ville'])) {
-            $where[]          = 'se.Ville LIKE :ville';
-            $params[':ville'] = '%' . $filters['ville'] . '%';
-        }
-
-        $whereSQL = implode(' AND ', $where);
-        $offset   = $this->getOffset($page, $perPage);
-
-        $sql = "
-            SELECT DISTINCT
-                e.Id_entreprise, e.Nom, e.Description,
-                e.Email_contact, e.Tel_contact,
-                e.statut_juridique, e.SIRET,
-                se.Ville,
-                AVG(ev.Note)              AS moyenne_note,
-                COUNT(DISTINCT p.Id_etudiant) AS nb_stagiaires
-            FROM ENTREPRISE e
-            LEFT JOIN SITE_ENTREPRISE se ON se.Id_entreprise = e.Id_entreprise
-            LEFT JOIN EVALUE ev          ON ev.Id_entreprise = e.Id_entreprise
-            LEFT JOIN OFFRE o            ON o.Id_entreprise  = e.Id_entreprise
-            LEFT JOIN POSTULE p          ON p.Id_offre       = o.Id_offre
-            WHERE $whereSQL
-            GROUP BY e.Id_entreprise, se.Ville
-            ORDER BY e.Nom ASC
-            LIMIT :limit OFFSET :offset
-        ";
-
-        $stmt = $this->db->prepare($sql);
-        foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
-        $stmt->bindValue(':limit',  $perPage, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset,  PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll();
+    if (!empty($filters['nom'])) {
+        $where[]        = 'e.Nom LIKE :nom';
+        $params[':nom'] = '%' . $filters['nom'] . '%';
     }
+    if (!empty($filters['ville'])) {
+        $where[]          = 'se.Ville LIKE :ville';
+        $params[':ville'] = '%' . $filters['ville'] . '%';
+    }
+
+    $whereSQL = implode(' AND ', $where);
+    $offset   = $this->getOffset($page, $perPage);
+
+    $sql = "
+        SELECT DISTINCT
+            e.Id_entreprise, 
+            e.Nom, 
+            e.Description,
+            e.Email_contact, 
+            e.Tel_contact,
+            e.statut_juridique, 
+            e.SIRET,
+            se.Ville,
+            ROUND(AVG(ev.Note), 1)                  AS moyenne_note,
+            COUNT(DISTINCT ev.Id_etudiant)          AS nb_evaluations,
+            COUNT(DISTINCT p.Id_etudiant)           AS nb_stagiaires
+        FROM ENTREPRISE e
+        LEFT JOIN SITE_ENTREPRISE se ON se.Id_entreprise = e.Id_entreprise
+        LEFT JOIN EVALUE ev          ON ev.Id_entreprise = e.Id_entreprise
+        LEFT JOIN OFFRE o            ON o.Id_entreprise  = e.Id_entreprise
+        LEFT JOIN POSTULE p          ON p.Id_offre       = o.Id_offre
+        WHERE $whereSQL
+        GROUP BY e.Id_entreprise, se.Ville
+        ORDER BY e.Nom ASC
+        LIMIT :limit OFFSET :offset
+    ";
+
+    $stmt = $this->db->prepare($sql);
+    
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
+    
+    $stmt->bindValue(':limit',  $perPage, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset,  PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll();
+}
+
 
         public function findByIdFull(int $id): array|false
-    {
-        $stmt = $this->db->prepare("
-            SELECT 
-                e.Id_entreprise, 
-                e.Nom, 
-                e.Description, 
-                e.Email_contact, 
-                e.Tel_contact, 
-                e.statut_juridique, 
-                e.SIRET,
-                AVG(ev.Note) AS moyenne_note
-            FROM ENTREPRISE e
-            LEFT JOIN EVALUE ev ON e.Id_entreprise = ev.Id_entreprise
-            WHERE e.Id_entreprise = :id
-            GROUP BY e.Id_entreprise
-        ");
-        $stmt->execute([':id' => $id]);
-        $entreprise = $stmt->fetch();
+{
+    $stmt = $this->db->prepare("
+        SELECT 
+            e.Id_entreprise,
+            e.Nom,
+            e.Description,
+            e.Email_contact,
+            e.Tel_contact,
+            e.statut_juridique,
+            e.SIRET,
+            ROUND(AVG(ev.Note), 2)      AS moyenne_note,
+            COUNT(ev.Id_etudiant)       AS nb_evaluations
+        FROM ENTREPRISE e
+        LEFT JOIN EVALUE ev ON e.Id_entreprise = ev.Id_entreprise
+        WHERE e.Id_entreprise = :id
+        GROUP BY e.Id_entreprise
+    ");
+    $stmt->execute([':id' => $id]);
+    
+    $entreprise = $stmt->fetch();
 
-        if ($entreprise) {
-            $entreprise['sites']       = $this->getSites($id);
-            $entreprise['offres']      = $this->getOffres($id);
-            $entreprise['evaluations'] = $this->getEvaluations($id);
-        }
-        return $entreprise;
+    if ($entreprise) {
+        $entreprise['sites']       = $this->getSites($id);
+        $entreprise['offres']      = $this->getOffres($id);
+        $entreprise['evaluations'] = $this->getEvaluations($id);
     }
+
+    return $entreprise;
+}
 
     /**
      * Récupère tous les sites d'une entreprise.
@@ -257,17 +270,46 @@ class EntrepriseModel extends BaseModel
     }
 
     public function noter(int $idEntreprise, int $idEtudiant, int $note, string $commentaire = ''): bool
-    {
-        $stmt = $this->db->prepare("
-            INSERT INTO EVALUE (Id_entreprise, Id_etudiant, Note, Commentaire, Date_evaluation)
-            VALUES (:entreprise, :etudiant, :note, :commentaire, CURDATE())
-            ON DUPLICATE KEY UPDATE Note = VALUES(Note), Commentaire = VALUES(Commentaire)
-        ");
-        return $stmt->execute([
-            ':entreprise'  => $idEntreprise,
-            ':etudiant'    => $idEtudiant,
-            ':note'        => $note,
-            ':commentaire' => $commentaire,
-        ]);
+{
+    // Debug 1 : on voit ce qu'on essaie d'insérer
+    error_log("=== TENTATIVE NOTE === Id_entreprise=$idEntreprise | Id_etudiant=$idEtudiant | Note=$note | Commentaire=" . substr($commentaire, 0, 100));
+
+    // Suppression ancienne évaluation
+    $delete = $this->db->prepare("
+        DELETE FROM EVALUE 
+        WHERE Id_entreprise = :entreprise AND Id_etudiant = :etudiant
+    ");
+    $delete->execute([
+        ':entreprise' => $idEntreprise,
+        ':etudiant'   => $idEtudiant
+    ]);
+
+    // Insertion
+    $stmt = $this->db->prepare("
+        INSERT INTO EVALUE 
+            (Id_entreprise, Id_etudiant, Note, Commentaire, Date_evaluation)
+        VALUES 
+            (:entreprise, :etudiant, :note, :commentaire, NOW())
+    ");
+
+    $success = $stmt->execute([
+        ':entreprise'  => $idEntreprise,
+        ':etudiant'    => $idEtudiant,
+        ':note'        => min(5, max(1, $note)),
+        ':commentaire' => trim($commentaire)
+    ]);
+
+    if (!$success) {
+        // Debug 2 : on récupère l'erreur exacte
+        $errorInfo = $stmt->errorInfo();
+        error_log("ERREUR INSERT EVALUE - Code: " . $stmt->errorCode() . " | Info: " . print_r($errorInfo, true));
+        
+        // On force un message visible
+        throw new \PDOException("Échec INSERT EVALUE - " . ($errorInfo[2] ?? 'Erreur inconnue'));
     }
+
+    error_log("=== NOTE ENREGISTRÉE AVEC SUCCÈS ===");
+    return true;
+}
+
 }

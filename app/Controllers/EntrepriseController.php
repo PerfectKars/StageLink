@@ -183,17 +183,52 @@ foreach ($_POST['sites'] ?? [] as $site) {
     }
 
     public function noter(string $id): void
-    {
-        $this->requireRole('etudiant');
-        $this->verifyCsrf();
-        $this->model->noter(
-            (int) $id,
-            (int) $_SESSION['user']['id'],
-            (int) ($_POST['note'] ?? 1),
-            $_POST['commentaire'] ?? ''
-        );
-        $this->redirect('/entreprises/' . $id);
+{
+    $this->requireRole('etudiant');
+    $this->verifyCsrf();
+
+    $idEntreprise = (int) $id;
+    $note         = (int) ($_POST['note'] ?? 0);
+    $commentaire  = trim($_POST['commentaire'] ?? '');
+
+    $idEtudiant = (int) ($_SESSION['user']['id_etudiant'] ?? 0);
+
+    error_log("Session user => id_etudiant = " . ($_SESSION['user']['id_etudiant'] ?? 'NULL') . 
+          " | role = " . ($_SESSION['user']['role'] ?? 'NULL'));
+
+    if ($idEtudiant <= 0) {
+        $_SESSION['flash_error'] = 'Vous devez être connecté en tant qu\'étudiant.';
+        $this->redirect('/entreprises/' . $idEntreprise);
+        return;
     }
+
+    if ($note < 1 || $note > 5) {
+        $_SESSION['flash_error'] = 'La note doit être entre 1 et 5.';
+        $this->redirect('/entreprises/' . $idEntreprise);
+        return;
+    }
+
+    if (empty($commentaire)) {
+        $_SESSION['flash_error'] = 'Veuillez ajouter un commentaire pour votre évaluation.';
+        $this->redirect('/entreprises/' . $idEntreprise);
+        return;
+    }
+
+    try {
+        $success = $this->model->noter($idEntreprise, $idEtudiant, $note, $commentaire);
+
+        if ($success) {
+            $_SESSION['flash_success'] = 'Merci pour votre évaluation ! Elle a bien été enregistrée.';
+        } else {
+            $_SESSION['flash_error'] = 'Impossible d’enregistrer votre évaluation.';
+        }
+    } catch (\PDOException $e) {
+        $_SESSION['flash_error'] = 'Erreur technique lors de l’enregistrement.';
+        error_log("Erreur évaluation entreprise : " . $e->getMessage());
+    }
+
+    $this->redirect('/entreprises/' . $idEntreprise);
+}
 
     protected function getFormData(): array
     {

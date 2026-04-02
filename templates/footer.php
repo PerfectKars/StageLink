@@ -2,7 +2,7 @@
 
 <footer class="site-footer">
     <div class="footer__inner">
-        <p>&copy; <?= date('Y') ?> StageLink — CESI |/p>
+        <p>&copy; <?= date('Y') ?> StageLink — CESI |</p>
         
         <nav aria-label="Navigation légale">
             <a href="/mentions-legales">Mentions légales</a> |

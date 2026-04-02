@@ -173,7 +173,7 @@ ul { list-style: none; }
 /* ── Hero ──────────────────────────────────────────────────────────────────── */
 .hero {
     /* Fond avec gradient et image locale */
-    background: linear-gradient(rgba(79,70,229,0.7), rgba(79,70,229,0.7)),
+    background: linear-gradient(rgba(116, 111, 202, 0.2), rgba(122, 117, 211, 0.2)),
                 url('/assets/img/team_work.jpg'); /* chemin vers l'image dans public */
     background-size: cover;
     background-position: center;
@@ -414,11 +414,11 @@ ul { list-style: none; }
     padding: 2rem 1.25rem;
     background: var(--bg);
     height: 100vh; /* prend toute la hauteur de l'écran */
-    background-image: url('/assets/img/team_work.jpg'); /* remplace par le chemin de ton image */
+    /*background-image: url('/assets/img/team_work.jpg'); /* remplace par le chemin de ton image */
     background-size: cover;       /* l'image remplit tout l'espace */
     background-position: center;  /* centre l'image */
     background-repeat: no-repeat; /* pas de répétition de l'image */
-    background-color: rgba(50, 100, 200, 0.6); /* bleu plus doux, moins flashy */
+    background-color: rgba(255, 255, 255, 0.631); /* bleu plus doux, moins flashy */
     background-blend-mode: overlay;
 
 }
