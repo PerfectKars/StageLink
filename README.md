@@ -109,21 +109,3 @@ Le projet inclut des tests unitaires avec PHPUnit.
 Exécuter les tests :
 Bashvendor/bin/phpunit
 Fichier de configuration : phpunit.xml
-
-🔒 Sécurité
-
-Protection CSRF sur les formulaires POST
-Validation des entrées
-Hashage des mots de passe (bcrypt)
-Vérification des rôles (requireRole())
-Utilisation de prepared statements (PDO)
-
-
-📌 À faire / Améliorations possibles
-
-Finaliser le module Entreprises complet
-Ajouter un système de notifications
-Export des listes (PDF/Excel)
-Amélioration de l'interface (design responsive)
-Tests unitaires plus complets
-Mise en place d'un .env pour la configuration
