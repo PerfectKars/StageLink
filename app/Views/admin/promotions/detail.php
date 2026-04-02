@@ -1,19 +1,31 @@
 <?php /** @var array $promotion */ /** @var array $etudiants */ ?>
 <main class="container" id="main-content">
-    <a href="javascript:history.back()" style="color:var(--text-muted);font-size:.9rem;">← Retour</a>
+    <a href="/admin/promotions" style="color:var(--text-muted);font-size:.9rem;">← Promotions</a>
 
-    <div style="margin:1.25rem 0 1.5rem;">
-        <h1 style="font-size:1.4rem;font-weight:800;font-family:var(--font-head);margin-bottom:.3rem;">
-            📚 <?= htmlspecialchars($promotion['Libelle'] ?? '') ?>
-        </h1>
-        <p style="color:var(--text-muted);font-size:.9rem;">
-            <?= htmlspecialchars($promotion['Filiere'] ?? '') ?> —
-            <?= htmlspecialchars($promotion['Annee'] ?? '') ?>
-            <?php if (!empty($promotion['pilote_prenom'])): ?>
-                &nbsp;|&nbsp; 🧑‍🏫 Pilote :
-                <?= htmlspecialchars($promotion['pilote_prenom'] . ' ' . $promotion['pilote_nom']) ?>
-            <?php endif; ?>
-        </p>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin:1.25rem 0 1.5rem;gap:1rem;flex-wrap:wrap;">
+        <div>
+            <h1 style="font-size:1.4rem;font-weight:800;font-family:var(--font-head);margin-bottom:.3rem;">
+                📚 <?= htmlspecialchars($promotion['Libelle'] ?? '') ?>
+            </h1>
+            <p style="color:var(--text-muted);font-size:.9rem;">
+                <?= htmlspecialchars($promotion['Filiere'] ?? '') ?> —
+                <?= htmlspecialchars($promotion['Annee'] ?? '') ?>
+                <?php if (!empty($promotion['pilote_prenom'])): ?>
+                    &nbsp;|&nbsp; 🧑‍🏫 Pilote :
+                    <?= htmlspecialchars($promotion['pilote_prenom'] . ' ' . $promotion['pilote_nom']) ?>
+                <?php endif; ?>
+            </p>
+        </div>
+        <div style="display:flex;gap:.5rem;">
+            <a href="/admin/promotions/<?= (int)$promotion['Id_promotion'] ?>/edit"
+               class="btn btn--secondary" style="font-size:.85rem;">✏️ Modifier</a>
+            <form method="POST" action="/admin/promotions/<?= (int)$promotion['Id_promotion'] ?>/delete"
+                  onsubmit="return confirm('Supprimer cette promotion ?')">
+                <input type="hidden" name="csrf_token"
+                       value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                <button type="submit" class="btn btn--danger" style="font-size:.85rem;">🗑 Supprimer</button>
+            </form>
+        </div>
     </div>
 
     <h2 style="font-size:1rem;font-weight:700;margin-bottom:1rem;">
@@ -56,4 +68,11 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+    <?php
+$baseUrl     = '/admin/promotions/' . (int)$promotion['Id_promotion'];
+$queryParams = '';
+include __DIR__ . '/../../../../templates/pagination.php';
+?>
+
 </main>

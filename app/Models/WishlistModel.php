@@ -10,27 +10,33 @@ class WishlistModel extends BaseModel
      * Récupère toutes les offres en wishlist d'un étudiant
      * (via table AJOUTE — nouveau schéma corrigé par l'enseignante).
      */
-    public function findByEtudiant(int $idEtudiant): array
-    {
-        $sql = "
-            SELECT
-                o.Id_offre,
-                o.titre                   AS Titre,
-                o.description             AS Description,
-                o.gratification_par_heure AS Base_remuneration,
-                o.date_creation_offre     AS Date_offre,
-                a.Date_ajout,
-                e.Nom   AS Nom_entreprise,
-                e.Id_entreprise
-            FROM AJOUTE a
-            JOIN OFFRE      o ON o.Id_offre       = a.Id_offre
-            JOIN ENTREPRISE e ON e.Id_entreprise  = o.Id_entreprise
-            JOIN ETUDIANT   et ON et.Id_etudiant  = a.Id_etudiant
-            WHERE et.Id_utilisateur = :id_utilisateur
-            ORDER BY a.Date_ajout DESC
-        ";
-        return $this->fetchAll($sql, [':id_utilisateur' => $idEtudiant]);
-    }
+    public function findByEtudiant(int $idEtudiant, int $limit = 999, int $offset = 0): array
+{
+    $sql = "
+        SELECT
+            o.Id_offre,
+            o.titre                   AS Titre,
+            o.description             AS Description,
+            o.gratification_par_heure AS Base_remuneration,
+            o.date_creation_offre     AS Date_offre,
+            a.Date_ajout,
+            e.Nom   AS Nom_entreprise,
+            e.Id_entreprise
+        FROM AJOUTE a
+        JOIN OFFRE      o ON o.Id_offre       = a.Id_offre
+        JOIN ENTREPRISE e ON e.Id_entreprise  = o.Id_entreprise
+        JOIN ETUDIANT   et ON et.Id_etudiant  = a.Id_etudiant
+        WHERE et.Id_utilisateur = :id_utilisateur
+        ORDER BY a.Date_ajout DESC
+        LIMIT :limit OFFSET :offset
+    ";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindValue(':id_utilisateur', $idEtudiant, \PDO::PARAM_INT);
+    $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
 
     /**
      * Ajoute une offre à la wishlist (ignore les doublons).
@@ -84,4 +90,16 @@ class WishlistModel extends BaseModel
         $result = $this->fetchColumn($sql, [':id' => $idUtilisateur]);
         return $result !== false ? (int) $result : false;
     }
+
+public function countByEtudiant(int $idEtudiant): int
+{
+    $stmt = $this->db->prepare("
+        SELECT COUNT(*) FROM AJOUTE a
+        JOIN ETUDIANT et ON et.Id_etudiant = a.Id_etudiant
+        WHERE et.Id_utilisateur = :id
+    ");
+    $stmt->bindValue(':id', $idEtudiant, \PDO::PARAM_INT);
+    $stmt->execute();
+    return (int) $stmt->fetchColumn();
+}
 }

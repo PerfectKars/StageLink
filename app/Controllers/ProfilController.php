@@ -16,31 +16,13 @@ class ProfilController extends BaseController
         $user      = $userModel->findById((int) $_SESSION['user']['id']);
         $role      = $_SESSION['user']['role'] ?? '';
 
-        if ($role === 'etudiant' && empty($_SESSION['user']['photo'])) {
-    $idEtudiant = (new \App\Models\CandidatureModel())->getIdEtudiant(
-        (int) $_SESSION['user']['id']
-    );
-    if ($idEtudiant) {
-        $photo = (new \App\Models\EtudiantModel())->getPhoto($idEtudiant);
-        if ($photo) $_SESSION['user']['photo'] = $photo;
-    }
-}
-
         $candidatures      = [];
         $totalCandidatures = 0;
 
         if ($role === 'etudiant') {
-        $candidatureModel  = new CandidatureModel();
-        $toutes            = $candidatureModel->getByEtudiant((int) $_SESSION['user']['id']);
-        $totalCandidatures = count($toutes);
-        $candidatures      = array_slice($toutes, 0, 5);
-    }
-
-        if ($_SESSION['user']['role'] === 'etudiant') {
             $candidatureModel  = new CandidatureModel();
-            $toutes            = $candidatureModel->getByEtudiant((int) $_SESSION['user']['id']);
-            $totalCandidatures = count($toutes);
-            $candidatures      = array_slice($toutes, 0, 5); // 5 dernières seulement
+            $totalCandidatures = $candidatureModel->countByEtudiant((int) $_SESSION['user']['id']);
+            $candidatures      = $candidatureModel->getByEtudiant((int) $_SESSION['user']['id'], 3, 0);
         }
 
         $this->render('profil/index', [
@@ -52,76 +34,85 @@ class ProfilController extends BaseController
     }
 
     public function update(): void
-{
-    $this->requireAuth();
-    $this->verifyCsrf();
+    {
+        $this->requireAuth();
+        $this->verifyCsrf();
 
-    $userModel = new UserModel();
-    $data = [
-        'nom'          => trim($_POST['nom']          ?? ''),
-        'prenom'       => trim($_POST['prenom']       ?? ''),
-        'email'        => trim($_POST['email']        ?? ''),
-        'telephone'    => trim($_POST['telephone']    ?? ''),
-        'mot_de_passe' => $_POST['mot_de_passe']     ?? '',
-    ];
+        $userModel = new UserModel();
+        $data = [
+            'nom'          => trim($_POST['nom']          ?? ''),
+            'prenom'       => trim($_POST['prenom']       ?? ''),
+            'email'        => trim($_POST['email']        ?? ''),
+            'telephone'    => trim($_POST['telephone']    ?? ''),
+            'mot_de_passe' => $_POST['mot_de_passe']     ?? '',
+        ];
 
-    $userModel->update((int) $_SESSION['user']['id'], $data);
+        $userModel->update((int) $_SESSION['user']['id'], $data);
 
-    // Mise à jour session
-    $_SESSION['user']['nom']    = $data['nom'];
-    $_SESSION['user']['prenom'] = $data['prenom'];
-    $_SESSION['user']['email']  = $data['email'];
+        // Mise à jour session
+        $_SESSION['user']['nom']    = $data['nom'];
+        $_SESSION['user']['prenom'] = $data['prenom'];
+        $_SESSION['user']['email']  = $data['email'];
 
-    // Upload photo (étudiant uniquement)
-    if ($_SESSION['user']['role'] === 'etudiant'
-        && !empty($_FILES['photo']['name'])
-        && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+        // ====================== UPLOAD CV (étudiant uniquement) ======================
+        if ($_SESSION['user']['role'] === 'etudiant' 
+            && !empty($_FILES['cv']['name']) 
+            && $_FILES['cv']['error'] === UPLOAD_ERR_OK) {
 
-        $allowed = ['image/jpeg', 'image/png', 'image/webp'];
-        $finfo   = new \finfo(FILEINFO_MIME_TYPE);
-        $mime    = $finfo->file($_FILES['photo']['tmp_name']);
+            $candidatureModel = new CandidatureModel();
+            $idEtudiant = $candidatureModel->getIdEtudiant((int) $_SESSION['user']['id']);
 
-        if (in_array($mime, $allowed) && $_FILES['photo']['size'] <= 2 * 1024 * 1024) {
-            $ext        = match($mime) {
-                'image/png'  => 'png',
-                'image/webp' => 'webp',
-                default      => 'jpg',
-            };
-            $idEtudiant = (new \App\Models\CandidatureModel())->getIdEtudiant(
-                (int) $_SESSION['user']['id']
-            );
-            $nomFichier = 'photo_' . $idEtudiant . '.' . $ext;
-            $chemin     = '/srv/http/StageLink/uploads/photos/' . $nomFichier;
+            if ($idEtudiant) {
+                $uploadDir = '/srv/http/StageLink/uploads/candidatures/' . $idEtudiant . '/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
 
-            if (move_uploaded_file($_FILES['photo']['tmp_name'], $chemin)) {
-                (new \App\Models\EtudiantModel())->updatePhoto($idEtudiant, $nomFichier);
-                $_SESSION['user']['photo'] = $nomFichier;
+                $res = $this->handleCvUpload($_FILES['cv'], $uploadDir);
+
+                if (isset($res['error'])) {
+                    $_SESSION['flash_error'] = 'CV : ' . $res['error'];
+                } else {
+                    // On garde l'ancien comportement (CV principal)
+                    $candidatureModel->saveCv($idEtudiant, $res['nom'], $res['chemin'], true);
+                    $_SESSION['flash_success'] = '✅ CV uploadé avec succès !';
+                }
             }
         } else {
-            $_SESSION['flash_error'] = 'Photo invalide (JPG/PNG/WEBP, max 2MB).';
+            $_SESSION['flash_success'] = 'Profil mis à jour.';
         }
+
+        $this->redirect('/profil');
     }
 
-    $_SESSION['flash_success'] = 'Profil mis à jour.';
-    $this->redirect('/profil');
-}
+    /**
+     * Upload sécurisé du CV
+     */
+    private function handleCvUpload(array $file, string $dir): array
+    {
+        if ($file['size'] > 5 * 1024 * 1024) {
+            return ['error' => 'Fichier trop volumineux (max 5 MB).'];
+        }
 
-public function servirPhoto(string $fichier): void
-{
-    // Sécurité : pas de path traversal
-    $fichier = basename($fichier);
-    $chemin  = '/srv/http/StageLink/uploads/photos/' . $fichier;
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        if ($finfo->file($file['tmp_name']) !== 'application/pdf') {
+            return ['error' => 'Seuls les fichiers PDF sont acceptés.'];
+        }
 
-    if (!file_exists($chemin)) {
+        $nom    = 'cv_' . time() . '_' . bin2hex(random_bytes(4)) . '.pdf';
+        $chemin = $dir . $nom;
+
+        if (!move_uploaded_file($file['tmp_name'], $chemin)) {
+            return ['error' => 'Impossible de sauvegarder le fichier.'];
+        }
+
+        return ['nom' => $nom, 'chemin' => $chemin];
+    }
+
+    // Ancienne méthode photo (gardée pour éviter les erreurs)
+    public function servirPhoto(string $fichier): void
+    {
         http_response_code(404);
         exit;
     }
-
-    $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($chemin);
-    header('Content-Type: ' . $mime);
-    header('Cache-Control: public, max-age=86400');
-    readfile($chemin);
-    exit;
-}
-
 }

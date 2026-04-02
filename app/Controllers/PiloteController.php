@@ -19,16 +19,22 @@ class PiloteController extends BaseController
      * Liste des promotions du pilote connecté.
      */
     public function promotions(): void
-    {
-        $this->requireRole('pilote');
-        $idUtilisateur = (int) ($_SESSION['user']['id'] ?? 0);
-        $promotions    = $this->piloteModel->getPromotions($idUtilisateur);
+{
+    $this->requireRole('pilote');
+    $idUtilisateur = (int) ($_SESSION['user']['id'] ?? 0);
+    $page          = max(1, (int) ($_GET['page'] ?? 1));
+    $perPage       = 10;
+    $promotions    = $this->piloteModel->getPromotions($idUtilisateur, $perPage, ($page - 1) * $perPage);
+    $total         = $this->piloteModel->countPromotions($idUtilisateur);
 
-        $this->render('pilote/promotions', [
-            'title'      => 'Mes promotions',
-            'promotions' => $promotions,
-        ]);
-    }
+    $this->render('pilote/promotions', [
+        'title'      => 'Mes promotions',
+        'promotions' => $promotions,
+        'page'       => $page,
+        'perPage'    => $perPage,
+        'total'      => $total,
+    ]);
+}
 
     /**
      * GET /pilote/promotions/:id
@@ -88,15 +94,22 @@ class PiloteController extends BaseController
 
     // ── CRUD admin (PiloteController sert aussi pour /admin/pilotes) ──────────
 
-    public function index(): void
-    {
-        $this->requireRole('admin');
-        $pilotes = $this->piloteModel->findAll(100);
-        $this->render('admin/pilotes/index', [
-            'title'   => 'Gestion des pilotes',
-            'pilotes' => $pilotes,
-        ]);
-    }
+    private const PER_PAGE = 7;
+
+public function index(): void
+{
+    $this->requireRole('admin');
+    $page    = max(1, (int) ($_GET['page'] ?? 1));
+    $pilotes = $this->piloteModel->findAll(self::PER_PAGE, ($page - 1) * self::PER_PAGE);
+    $total   = $this->piloteModel->count();
+    $this->render('admin/pilotes/index', [
+        'title'   => 'Gestion des pilotes',
+        'pilotes' => $pilotes,
+        'page'    => $page,
+        'perPage' => self::PER_PAGE,
+        'total'   => $total,
+    ]);
+}
 
     public function show(string $id): void
     {

@@ -29,4 +29,12 @@
             </div>
         <?php endif; ?>
     </div>
+
+<?php
+$baseUrl = '/entreprises';
+$queryParams = http_build_query(['nom' => $filters['nom'] ?? '', 'ville' => $filters['ville'] ?? ''], '', '&', PHP_QUERY_RFC3986);
+$queryParams = rtrim($queryParams, '&');
+include __DIR__ . '/../../../templates/pagination.php';
+?>
+
 </section>

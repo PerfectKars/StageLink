@@ -150,16 +150,4 @@ $cvExistants = $cvExistants ?? [];
     </section>
 </main>
 
-<script>
-// Si un CV existant est sélectionné, le champ file n'est plus obligatoire
-const selectCv = document.getElementById('cv-existant');
-const inputCv  = document.getElementById('cv');
 
-if (selectCv && inputCv) {
-    selectCv.addEventListener('change', () => {
-        inputCv.required = selectCv.value === '0';
-    });
-    // Init
-    inputCv.required = selectCv.value === '0';
-}
-</script>

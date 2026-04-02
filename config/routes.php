@@ -7,7 +7,12 @@ $router = new Router();
 
 // ── Publiques ─────────────────────────────────────────────────────────────────
 $router->get('/',                          ['HomeController',        'index']);
-$router->get('/mentions-legales',          ['HomeController',        'mentionsLegales']);
+
+// ── Pages légales ─────────────────────────────────────────────────────────────
+$router->get('/mentions-legales',               ['HomeController', 'mentionsLegales']);
+$router->get('/politique-de-confidentialite',   ['HomeController', 'politiqueConfidentialite']);
+$router->get('/politique-de-cookies',           ['HomeController', 'politiqueCookies']);
+$router->get('/droits-auteur',                  ['HomeController', 'droitsAuteur']);
 
 // ── Authentification ──────────────────────────────────────────────────────────
 $router->get('/login',                     ['AuthController',        'loginForm']);
@@ -89,6 +94,10 @@ $router->post('/admin/pilotes/:id/delete', ['PiloteController',      'delete']);
 $router->get('/admin/promotions/create',  ['AdminController', 'promotionForm']);
 $router->post('/admin/promotions/create', ['AdminController', 'promotionCreate']);
 $router->get('/admin/promotions/:id', ['AdminController', 'promotionDetail']);
+$router->get('/admin/promotions',             ['AdminController', 'promotionIndex']);
+$router->get('/admin/promotions/:id/edit',    ['AdminController', 'promotionEditForm']);
+$router->post('/admin/promotions/:id/edit',   ['AdminController', 'promotionEdit']);
+$router->post('/admin/promotions/:id/delete', ['AdminController', 'promotionDelete']);
 
 
 return $router;

@@ -58,4 +58,11 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+    <?php
+$baseUrl     = '/pilote/promotions/' . (int)$promotion['Id_promotion'];
+$queryParams = '';
+include __DIR__ . '/../../../templates/pagination.php';
+?>
+
 </main>

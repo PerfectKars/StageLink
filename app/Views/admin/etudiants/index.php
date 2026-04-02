@@ -69,4 +69,12 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+ <?php
+$baseUrl = '/admin/etudiants';
+$queryParams = http_build_query(['search' => $search], '', '&', PHP_QUERY_RFC3986);
+$queryParams = rtrim($queryParams, '&');
+include __DIR__ . '/../../../../templates/pagination.php';
+?>
+
 </main>

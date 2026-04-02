@@ -62,4 +62,5 @@ $raw = $this->userModel->findByEmail($email);
         header('Clear-Site-Data: "cache", "cookies"');
         $this->redirect('/login');
     }
+
 }

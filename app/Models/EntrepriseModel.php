@@ -56,10 +56,18 @@ class EntrepriseModel extends BaseModel
         return $stmt->fetchAll();
     }
 
-    public function findByIdFull(int $id): array|false
+        public function findByIdFull(int $id): array|false
     {
         $stmt = $this->db->prepare("
-            SELECT e.*, AVG(ev.Note) AS moyenne_note
+            SELECT 
+                e.Id_entreprise, 
+                e.Nom, 
+                e.Description, 
+                e.Email_contact, 
+                e.Tel_contact, 
+                e.statut_juridique, 
+                e.SIRET,
+                AVG(ev.Note) AS moyenne_note
             FROM ENTREPRISE e
             LEFT JOIN EVALUE ev ON e.Id_entreprise = ev.Id_entreprise
             WHERE e.Id_entreprise = :id
@@ -79,10 +87,11 @@ class EntrepriseModel extends BaseModel
     /**
      * Récupère tous les sites d'une entreprise.
      */
-    public function getSites(int $idEntreprise): array
+        public function getSites(int $idEntreprise): array
     {
         $stmt = $this->db->prepare("
-            SELECT * FROM SITE_ENTREPRISE
+            SELECT Id_site, Id_entreprise, Adresse, Ville, Code_postal, Pays
+            FROM SITE_ENTREPRISE
             WHERE Id_entreprise = :id
             ORDER BY Id_site ASC
         ");
@@ -109,10 +118,22 @@ class EntrepriseModel extends BaseModel
         return $result;
     }
 
-    public function getOffres(int $idEntreprise): array
+        public function getOffres(int $idEntreprise): array
     {
         $stmt = $this->db->prepare("
-            SELECT o.*, se.Ville, se.Adresse
+            SELECT 
+                o.Id_offre,
+                o.Id_entreprise,
+                o.Id_site,
+                o.titre,
+                o.description,
+                o.statut,
+                o.gratification_par_heure,
+                o.duree_mois,
+                o.date_creation_offre,
+                o.date_prevue,
+                se.Ville,
+                se.Adresse
             FROM OFFRE o
             LEFT JOIN SITE_ENTREPRISE se ON se.Id_site = o.Id_site
             WHERE o.Id_entreprise = :id

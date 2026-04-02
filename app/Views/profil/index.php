@@ -62,22 +62,13 @@ $role              = $_SESSION['user']['role'] ?? '';
 
                     <?php if ($role === 'etudiant'): ?>
 <div class="form__group">
-    <?php $photo = $_SESSION['user']['photo'] ?? null; ?>
-    <?php if ($photo): ?>
-        <div style="margin-bottom:.75rem;">
-            <img src="/uploads/photos/<?= htmlspecialchars($photo) ?>"
-                 alt="Photo de profil"
-                 style="width:80px;height:80px;border-radius:50%;
-                        object-fit:cover;border:2px solid var(--border);">
-        </div>
-    <?php endif; ?>
-    <label>Photo de profil
+    <label>CV (PDF)
         <small style="color:var(--text-muted);font-weight:normal;">
-            — JPG/PNG/WEBP, max 2MB
+            — Max 5 Mo. Ce CV sera considéré comme principal.
         </small>
     </label>
-    <input type="file" name="photo"
-           accept="image/jpeg,image/png,image/webp"
+    <input type="file" name="cv"
+           accept="application/pdf"
            class="form-input">
 </div>
 <?php endif; ?>

@@ -20,16 +20,17 @@ class EtudiantController extends BaseController
         $this->requireRole('admin', 'pilote');
         $page      = max(1, (int) ($_GET['page'] ?? 1));
         $search    = trim($_GET['search'] ?? '');
-        $etudiants = $this->etudiantModel->search($search, $page, 20);
-        $total     = $this->etudiantModel->count();
+        $etudiants = $this->etudiantModel->search($search, $page, 7);
+        $total = $this->etudiantModel->countSearch($search);
 
         $this->render('admin/etudiants/index', [
-            'title'     => 'Gestion des étudiants',
-            'etudiants' => $etudiants,
-            'search'    => $search,
-            'page'      => $page,
-            'total'     => $total,
-        ]);
+    'title'     => 'Gestion des étudiants',
+    'etudiants' => $etudiants,
+    'search'    => $search,
+    'page'      => $page,
+    'perPage'   => 7,
+    'total'     => $total,
+]);
     }
 
     /** GET /admin/etudiants/:id */

@@ -1,13 +1,14 @@
-<?php /** @var array $pilotes */ ?>
+<?php /** @var array $promotions */ ?>
 <main class="container" id="main-content">
-    <a href="/admin/utilisateurs" style="color:var(--text-muted);font-size:.9rem;">
-        ← Gestion des utilisateurs
-    </a>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-        <h1 class="page-title" style="margin:0;">Pilotes</h1>
-        <a href="/admin/utilisateurs/creer?type=pilote" class="btn btn--primary">
-            + Nouveau pilote
-        </a>
+        <h1 class="page-title" style="margin:0;">
+            Promotions
+            <span style="background:var(--primary);color:#fff;border-radius:99px;
+                         padding:.15rem .65rem;font-size:.85rem;margin-left:.5rem;">
+                <?= (int)$total ?>
+            </span>
+        </h1>
+        <a href="/admin/promotions/create" class="btn btn--primary">+ Nouvelle promotion</a>
     </div>
 
     <?php if (!empty($_SESSION['flash_success'])): ?>
@@ -17,12 +18,12 @@
         <?php unset($_SESSION['flash_success']); ?>
     <?php endif; ?>
 
-    <?php if (empty($pilotes)): ?>
-        <p style="color:var(--text-muted);">Aucun pilote.</p>
+    <?php if (empty($promotions)): ?>
+        <p style="color:var(--text-muted);">Aucune promotion.</p>
     <?php else: ?>
         <div style="display:flex;flex-direction:column;gap:.65rem;">
-            <?php foreach ($pilotes as $p): ?>
-                <a href="/admin/pilotes/<?= (int)$p['Id_pilote'] ?>"
+            <?php foreach ($promotions as $p): ?>
+                <a href="/admin/promotions/<?= (int)$p['Id_promotion'] ?>"
                    style="text-decoration:none;color:inherit;">
                     <article class="card" style="padding:1rem 1.5rem;display:flex;
                                                   justify-content:space-between;align-items:center;
@@ -31,18 +32,18 @@
                              onmouseleave="this.style.boxShadow=''">
                         <div>
                             <p style="font-weight:600;font-size:.95rem;margin-bottom:.2rem;">
-                                🧑‍🏫 <?= htmlspecialchars($p['prenom'] . ' ' . $p['nom']) ?>
+                                📚 <?= htmlspecialchars($p['Libelle']) ?>
                             </p>
                             <p style="font-size:.82rem;color:var(--text-muted);">
-                                ✉️ <?= htmlspecialchars($p['Email'] ?? '') ?>
-                                <?php if (!empty($p['Telephone'])): ?>
-                                    &nbsp;|&nbsp; 📞 <?= htmlspecialchars($p['Telephone']) ?>
+                                <?= htmlspecialchars($p['Filiere'] ?? '') ?> — <?= htmlspecialchars($p['Annee'] ?? '') ?>
+                                <?php if (!empty($p['pilote_prenom'])): ?>
+                                    &nbsp;|&nbsp; 🧑‍🏫 <?= htmlspecialchars($p['pilote_prenom'] . ' ' . $p['pilote_nom']) ?>
                                 <?php endif; ?>
                             </p>
                         </div>
-                        <div style="display:flex;align-items:center;gap:.75rem;">
+                        <div style="display:flex;align-items:center;gap:1rem;">
                             <span style="font-size:.85rem;color:var(--text-muted);">
-                                <?= (int)($p['nb_promotions'] ?? 0) ?> promotion(s)
+                                👥 <?= (int)$p['nb_etudiants'] ?> étudiant(s)
                             </span>
                             <span style="color:var(--primary);font-size:.85rem;">→</span>
                         </div>
@@ -53,9 +54,8 @@
     <?php endif; ?>
 
     <?php
-$baseUrl = '/admin/pilotes';
-$queryParams = '';
-include __DIR__ . '/../../../../templates/pagination.php';
-?>
-
+    $baseUrl     = '/admin/promotions';
+    $queryParams = '';
+    include __DIR__ . '/../../../../templates/pagination.php';
+    ?>
 </main>

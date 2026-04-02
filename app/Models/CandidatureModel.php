@@ -10,7 +10,7 @@ class CandidatureModel extends BaseModel
     protected string $primaryKey = 'Id_offre';
 
     /** Candidatures de l'étudiant connecté (via Id_utilisateur session) */
-    public function getByEtudiant(int $idUtilisateur): array
+    public function getByEtudiant(int $idUtilisateur, int $limit = 999, int $offset = 0): array
     {
         $stmt = $this->db->prepare("
             SELECT
@@ -31,8 +31,12 @@ class CandidatureModel extends BaseModel
             LEFT JOIN CV cv              ON cv.Id_cv         = p.Id_cv
             WHERE et.Id_utilisateur = :id
             ORDER BY p.Date_candidature DESC
+            LIMIT :limit OFFSET :offset
         ");
-        $stmt->execute([':id' => $idUtilisateur]);
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->bindValue(':id', $idUtilisateur, \PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll();
     }
     
@@ -318,6 +322,18 @@ public function getStatutCandidature(int $idUtilisateur, int $idOffre): string|n
     $stmt->execute([':id' => $idUtilisateur, ':offre' => $idOffre]);
     $result = $stmt->fetchColumn();
     return $result ?: null;
+}
+
+public function countByEtudiant(int $idUtilisateur): int
+{
+    $stmt = $this->db->prepare("
+        SELECT COUNT(*) FROM POSTULE p
+        JOIN ETUDIANT et ON et.Id_etudiant = p.Id_etudiant
+        WHERE et.Id_utilisateur = :id
+    ");
+    $stmt->bindValue(':id', $idUtilisateur, \PDO::PARAM_INT);
+    $stmt->execute();
+    return (int) $stmt->fetchColumn();
 }
 
 }
