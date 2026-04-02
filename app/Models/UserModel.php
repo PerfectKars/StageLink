@@ -13,10 +13,12 @@ class UserModel extends BaseModel
     /**
      * Trouve un utilisateur par ID et enrichit avec nom/prenom selon le rôle.
      */
-    public function findById(int $id): array|false
+        public function findById(int $id): array|false
     {
         $stmt = $this->db->prepare(
-            "SELECT * FROM UTILISATEUR WHERE Id_utilisateur = :id"
+            "SELECT Id_utilisateur, Email, Mot_de_passe, Role 
+             FROM UTILISATEUR 
+             WHERE Id_utilisateur = :id"
         );
         $stmt->execute([':id' => $id]);
         $user = $stmt->fetch();
@@ -30,10 +32,13 @@ class UserModel extends BaseModel
     /**
      * Trouve un utilisateur par email (insensible à la casse).
      */
-    public function findByEmail(string $email): array|false
+        public function findByEmail(string $email): array|false
     {
         $stmt = $this->db->prepare(
-            "SELECT * FROM UTILISATEUR WHERE Email = :email LIMIT 1"
+            "SELECT Id_utilisateur, Email, Mot_de_passe, Role 
+             FROM UTILISATEUR 
+             WHERE Email = :email 
+             LIMIT 1"
         );
         $stmt->execute([':email' => $email]);
         return $stmt->fetch();

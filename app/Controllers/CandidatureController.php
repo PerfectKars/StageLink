@@ -129,15 +129,23 @@ class CandidatureController extends BaseController
     }
 
     /** GET /mes-candidatures */
-    public function mesCandidatures(): void
-    {
-        $this->requireRole('etudiant');
-        $idUtilisateur = (int) ($_SESSION['user']['id'] ?? 0);
-        $this->render('candidature/index', [
-            'title'        => 'Mes candidatures',
-            'candidatures' => $this->candidatureModel->getByEtudiant($idUtilisateur),
-        ]);
-    }
+    private const PER_PAGE = 5;
+
+public function mesCandidatures(): void
+{
+    $this->requireRole('etudiant');
+    $idUtilisateur = (int) ($_SESSION['user']['id'] ?? 0);
+    $page          = max(1, (int) ($_GET['page'] ?? 1));
+    $candidatures  = $this->candidatureModel->getByEtudiant($idUtilisateur, self::PER_PAGE, ($page - 1) * self::PER_PAGE);
+    $total         = $this->candidatureModel->countByEtudiant($idUtilisateur);
+    $this->render('candidature/index', [
+        'title'        => 'Mes candidatures',
+        'candidatures' => $candidatures,
+        'page'         => $page,
+        'perPage'      => self::PER_PAGE,
+        'total'        => $total,
+    ]);
+}
 
     /** GET /pilote/candidatures */
     public function candidaturesPromotion(): void

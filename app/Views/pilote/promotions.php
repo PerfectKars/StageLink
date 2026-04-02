@@ -29,4 +29,11 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+<?php
+$baseUrl     = '/pilote/promotions';
+$queryParams = '';
+include __DIR__ . '/../../../templates/pagination.php';
+?>
+
 </main>

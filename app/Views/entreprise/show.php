@@ -23,21 +23,27 @@
                     </div>
                 </div>
                 <?php if (in_array($role, ['admin', 'pilote'])): ?>
-                <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;">
-                    <a href="/entreprises/<?= (int)$entreprise['Id_entreprise'] ?>/edit"
-                       class="btn btn--secondary" style="font-size:.85rem;">✏️ Modifier</a>
-                    <?php if ($role === 'admin'): ?>
-                    <button type="button" class="btn btn--danger" style="font-size:.85rem;"
-                            onclick="confirmerSuppression()">🗑 Supprimer</button>
-                    <form id="form-delete" method="POST"
-                          action="/entreprises/<?= (int)$entreprise['Id_entreprise'] ?>/delete"
-                          style="display:none;">
-                        <input type="hidden" name="csrf_token"
-                               value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
-                    </form>
-                    <?php endif; ?>
-                </div>
-                <?php endif; ?>
+<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;">
+    <a href="/entreprises/<?= (int)$entreprise['Id_entreprise'] ?>/edit"
+       class="btn btn--secondary" style="font-size:.85rem;">✏️ Modifier</a>
+    
+    <?php if ($role === 'admin'): ?>
+        <!-- Champs cachés pour le JavaScript -->
+        <input type="hidden" id="nb-offres-hidden" value="<?= count($entreprise['offres'] ?? []) ?>">
+        <input type="hidden" id="nom-entreprise-hidden" value="<?= addslashes($entreprise['Nom'] ?? '') ?>">
+
+        <button type="button" class="btn btn--danger" style="font-size:.85rem;"
+                onclick="confirmerSuppression()">🗑 Supprimer</button>
+
+        <form id="form-delete" method="POST"
+              action="/entreprises/<?= (int)$entreprise['Id_entreprise'] ?>/delete"
+              style="display:none;">
+            <input type="hidden" name="csrf_token"
+                   value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+        </form>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
             </div>
 
             <div class="offre-detail__info">
@@ -128,13 +134,4 @@
     </div>
 </section>
 
-<script>
-function confirmerSuppression() {
-    const nbOffres = <?= count($entreprise['offres'] ?? []) ?>;
-    let msg = 'Supprimer "<?= addslashes($entreprise['Nom'] ?? '') ?>" ?';
-    if (nbOffres > 0) {
-        msg += '\n\n⚠️ ' + nbOffres + ' offre(s) rattachée(s) seront également supprimée(s).';
-    }
-    if (confirm(msg)) document.getElementById('form-delete').submit();
-}
-</script>
+

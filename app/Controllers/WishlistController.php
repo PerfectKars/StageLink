@@ -15,17 +15,23 @@ class WishlistController extends BaseController
     }
 
     /** GET /wishlist */
-    public function index(): void
-    {
-        $this->requireRole('etudiant');
-        $idUtilisateur = (int) ($_SESSION['user']['id'] ?? 0);
-        $offres        = $this->wishlistModel->findByEtudiant($idUtilisateur);
+    private const PER_PAGE = 5;
 
-        $this->render('wishlist/index', [
-            'title'  => 'Ma liste de souhaits',
-            'offres' => $offres,
-        ]);
-    }
+public function index(): void
+{
+    $this->requireRole('etudiant');
+    $idUtilisateur = (int) ($_SESSION['user']['id'] ?? 0);
+    $page          = max(1, (int) ($_GET['page'] ?? 1));
+    $offres        = $this->wishlistModel->findByEtudiant($idUtilisateur, self::PER_PAGE, ($page - 1) * self::PER_PAGE);
+    $total         = $this->wishlistModel->countByEtudiant($idUtilisateur);
+    $this->render('wishlist/index', [
+        'title'   => 'Ma liste de souhaits',
+        'offres'  => $offres,
+        'page'    => $page,
+        'perPage' => self::PER_PAGE,
+        'total'   => $total,
+    ]);
+}
 
     /** POST /wishlist/add */
     public function add(): void

@@ -121,7 +121,7 @@
 
                 <?php if ($role === 'admin'): ?>
                     <li><a href="/admin/utilisateurs" title="Gérer les utilisateurs">Utilisateurs</a></li>
-                    <li><a href="/admin/promotions/create" title="Créer une nouvelle promotion">Créer promotion</a></li>
+                    <li><a href="/admin/promotions">Promotions</a></li>
                 <?php endif; ?>
 
                 <!-- Avatar + lien profil -->

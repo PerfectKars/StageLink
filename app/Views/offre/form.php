@@ -128,68 +128,13 @@ $sitesJson = json_encode($sitesParEntreprise ?? [], JSON_HEX_TAG | JSON_HEX_APOS
             </div>
         </form>
     </section>
+
+    <script>
+    window.offreFormData = {
+        sitesParEntreprise: <?= $sitesJson ?? '{}' ?>,
+        currentSite: <?= (int)($offre['Id_site'] ?? 0) ?>
+    };
+</script>
+
 </main>
 
-<script>
-const sitesData = <?= $sitesJson ?>;
-const selectEnt  = document.getElementById('Id_entreprise');
-const selectSite = document.getElementById('Id_site');
-const siteHint   = document.getElementById('site-hint');
-const currentSite = <?= (int)($offre['Id_site'] ?? 0) ?>;
-
-function updateSites(idEntreprise, preselectId = 0) {
-    const sites = sitesData[idEntreprise] || [];
-    selectSite.innerHTML = '';
-    if (sites.length === 0) {
-        selectSite.innerHTML = '<option value="">Aucun site pour cette entreprise</option>';
-        siteHint.style.display = 'none';
-        return;
-    }
-    sites.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.Id_site;
-        opt.textContent = `${s.Adresse}, ${s.Code_postal} ${s.Ville} (${s.Pays})`;
-        if (parseInt(s.Id_site) === preselectId) opt.selected = true;
-        selectSite.appendChild(opt);
-    });
-    siteHint.style.display = 'block';
-}
-
-selectEnt.addEventListener('change', () => updateSites(selectEnt.value));
-if (selectEnt.value) updateSites(selectEnt.value, currentSite);
-
-// Validation gratification/durée temps réel
-const inputDuree  = document.getElementById('duree_mois');
-const inputGrat   = document.getElementById('Base_remuneration');
-const hintGrat    = document.createElement('p');
-hintGrat.style.cssText = 'font-size:.85rem;margin-top:.25rem;';
-inputGrat.parentNode.appendChild(hintGrat);
-
-function checkGratification() {
-    const duree = parseInt(inputDuree.value) || 0;
-    const grat  = parseFloat(inputGrat.value) || 0;
-
-    // Durée
-    if (duree > 6) {
-        inputDuree.setCustomValidity('Maximum 6 mois.');
-    } else {
-        inputDuree.setCustomValidity('');
-    }
-
-    // Gratification
-    if (duree > 2 && grat < 4.50) {
-        hintGrat.textContent = '⚠️ Gratification minimale légale : 4,50 €/h pour un stage > 2 mois.';
-        hintGrat.style.color = 'var(--danger, #dc2626)';
-        inputGrat.setCustomValidity('Minimum 4,50 €/h pour un stage de plus de 2 mois.');
-    } else {
-        hintGrat.textContent = duree > 0 && duree <= 2
-            ? 'ℹ️ Stage ≤ 2 mois : gratification non obligatoire.'
-            : '';
-        hintGrat.style.color = 'var(--text-muted)';
-        inputGrat.setCustomValidity('');
-    }
-}
-
-inputDuree.addEventListener('input', checkGratification);
-inputGrat.addEventListener('input', checkGratification);
-</script>

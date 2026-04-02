@@ -197,13 +197,93 @@ public function promotionDetail(string $id): void
         return;
     }
 
-    $etudiants = $this->piloteModel->getEtudiants($idPromotion);
+    $page      = max(1, (int) ($_GET['page'] ?? 1));
+    $perPage   = 8;
+    $etudiants = $this->piloteModel->getEtudiants($idPromotion, $perPage, ($page - 1) * $perPage);
+    $total     = $this->piloteModel->countEtudiants($idPromotion);
 
     $this->render('admin/promotions/detail', [
         'title'      => $promotion['Libelle'],
         'promotion'  => $promotion,
         'etudiants'  => $etudiants,
+        'page'       => $page,
+        'perPage'    => $perPage,
+        'total'      => $total,
     ]);
+}
+
+public function promotionIndex(): void
+{
+    $this->requireRole('admin');
+    $page       = max(1, (int) ($_GET['page'] ?? 1));
+    $perPage    = 8;
+    $promotions = $this->piloteModel->getAllPromotions($perPage, ($page - 1) * $perPage);
+    $total      = $this->piloteModel->countAllPromotions();
+
+    $this->render('admin/promotions/index', [
+        'title'      => 'Gestion des promotions',
+        'promotions' => $promotions,
+        'page'       => $page,
+        'perPage'    => $perPage,
+        'total'      => $total,
+    ]);
+}
+
+public function promotionEditForm(string $id): void
+{
+    $this->requireRole('admin');
+    $promotion = $this->piloteModel->getPromotion((int) $id);
+    if (!$promotion) { $this->redirect('/admin/promotions'); return; }
+    $pilotes = $this->piloteModel->findAll(100);
+
+    $this->render('admin/promotions/form', [
+        'title'     => 'Modifier la promotion',
+        'promotion' => $promotion,
+        'pilotes'   => $pilotes,
+        'errors'    => [],
+        'edit'      => true,
+    ]);
+}
+
+public function promotionEdit(string $id): void
+{
+    $this->requireRole('admin');
+    $this->verifyCsrf();
+
+    $data = [
+        'libelle'   => trim($_POST['libelle']    ?? ''),
+        'annee'     => trim($_POST['annee']      ?? ''),
+        'filiere'   => trim($_POST['filiere']    ?? ''),
+        'id_pilote' => (int) ($_POST['id_pilote'] ?? 0),
+    ];
+    $errors = [];
+    if (empty($data['libelle'])) $errors[] = 'Le libellé est obligatoire.';
+    if (empty($data['filiere'])) $errors[] = 'La filière est obligatoire.';
+    if (empty($data['annee']))   $errors[] = 'L\'année est obligatoire.';
+
+    if (!empty($errors)) {
+        $this->render('admin/promotions/form', [
+            'title'     => 'Modifier la promotion',
+            'promotion' => array_merge(['Id_promotion' => (int)$id], $data),
+            'pilotes'   => $this->piloteModel->findAll(100),
+            'errors'    => $errors,
+            'edit'      => true,
+        ]);
+        return;
+    }
+
+    $this->piloteModel->updatePromotion((int) $id, $data);
+    $_SESSION['flash_success'] = 'Promotion mise à jour.';
+    $this->redirect('/admin/promotions/' . $id);
+}
+
+public function promotionDelete(string $id): void
+{
+    $this->requireRole('admin');
+    $this->verifyCsrf();
+    $this->piloteModel->deletePromotion((int) $id);
+    $_SESSION['flash_success'] = 'Promotion supprimée.';
+    $this->redirect('/admin/promotions');
 }
 
 }

@@ -86,4 +86,11 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+    <?php
+$baseUrl = '/wishlist';
+$queryParams = '';
+include __DIR__ . '/../../../templates/pagination.php';
+?>
+
 </main>

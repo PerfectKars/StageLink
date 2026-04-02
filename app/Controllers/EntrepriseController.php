@@ -8,7 +8,7 @@ use App\Models\EntrepriseModel;
 class EntrepriseController extends BaseController
 {
     private EntrepriseModel $model;
-    private const PER_PAGE = 10;
+    private const PER_PAGE = 9;
 
     public function __construct()
     {

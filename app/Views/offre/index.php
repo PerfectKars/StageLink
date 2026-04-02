@@ -55,30 +55,55 @@ $selectedComps = isset($filters['competences']) ? (array) $filters['competences'
 
                 <!-- Compétences checkboxes -->
                 <?php if (!empty($competences)): ?>
-                <div style="margin-bottom:1rem;">
-                    <label style="font-size:.82rem;color:var(--text-muted);display:block;margin-bottom:.5rem;">
-                        Compétences requises
-                    </label>
-                    <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
-                        <?php foreach ($competences as $c): ?>
-                            <label style="display:flex;align-items:center;gap:.35rem;
-                                          padding:.35rem .75rem;border-radius:99px;cursor:pointer;
-                                          font-size:.85rem;border:1px solid var(--border);
-                                          background:<?= in_array($c['Nom_competence'], $selectedComps) ? 'var(--primary)' : 'var(--surface)' ?>;
-                                          color:<?= in_array($c['Nom_competence'], $selectedComps) ? '#fff' : 'inherit' ?>;"
-                                   id="label-comp-<?= (int)$c['Id_competence'] ?>">
-                                <input type="checkbox"
-                                       name="competences[]"
-                                       value="<?= htmlspecialchars($c['Nom_competence']) ?>"
-                                       style="display:none;"
-                                       <?= in_array($c['Nom_competence'], $selectedComps) ? 'checked' : '' ?>
-                                       onchange="toggleCompLabel(this, <?= (int)$c['Id_competence'] ?>)">
-                                <?= htmlspecialchars($c['Nom_competence']) ?>
-                            </label>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                <?php endif; ?>
+<div style="margin-bottom:1rem;">
+    <label style="font-size:.82rem;color:var(--text-muted);display:block;margin-bottom:.5rem;">
+        Compétences requises
+    </label>
+    <?php
+    $compsVisibles = array_slice($competences, 0, 6);
+    $compsCachees  = array_slice($competences, 6);
+    ?>
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <?php foreach ($compsVisibles as $c): ?>
+            <label style="display:flex;align-items:center;gap:.35rem;
+                          padding:.35rem .75rem;border-radius:99px;cursor:pointer;
+                          font-size:.85rem;border:1px solid var(--border);
+                          background:<?= in_array($c['Nom_competence'], $selectedComps) ? 'var(--primary)' : 'var(--surface)' ?>;
+                          color:<?= in_array($c['Nom_competence'], $selectedComps) ? '#fff' : 'inherit' ?>;"
+                   id="label-comp-<?= (int)$c['Id_competence'] ?>">
+                <input type="checkbox" name="competences[]"
+                       value="<?= htmlspecialchars($c['Nom_competence']) ?>"
+                       style="display:none;"
+                       <?= in_array($c['Nom_competence'], $selectedComps) ? 'checked' : '' ?>
+                       onchange="toggleCompLabel(this, <?= (int)$c['Id_competence'] ?>)">
+                <?= htmlspecialchars($c['Nom_competence']) ?>
+            </label>
+        <?php endforeach; ?>
+
+        <?php if (!empty($compsCachees)): ?>
+        <div id="comps-cachees" style="display:<?= !empty(array_intersect(array_column($compsCachees, 'Nom_competence'), $selectedComps)) ? 'contents' : 'none' ?>;flex-wrap:wrap;gap:.5rem;">
+            <?php foreach ($compsCachees as $c): ?>
+                <label style="display:flex;align-items:center;gap:.35rem;
+                              padding:.35rem .75rem;border-radius:99px;cursor:pointer;
+                              font-size:.85rem;border:1px solid var(--border);
+                              background:<?= in_array($c['Nom_competence'], $selectedComps) ? 'var(--primary)' : 'var(--surface)' ?>;
+                              color:<?= in_array($c['Nom_competence'], $selectedComps) ? '#fff' : 'inherit' ?>;"
+                       id="label-comp-<?= (int)$c['Id_competence'] ?>">
+                    <input type="checkbox" name="competences[]"
+                           value="<?= htmlspecialchars($c['Nom_competence']) ?>"
+                           style="display:none;"
+                           <?= in_array($c['Nom_competence'], $selectedComps) ? 'checked' : '' ?>
+                           onchange="toggleCompLabel(this, <?= (int)$c['Id_competence'] ?>)">
+                    <?= htmlspecialchars($c['Nom_competence']) ?>
+                </label>
+            <?php endforeach; ?>
+        </div>
+        <button type="button" id="btn-voir-plus-comps" class="voir-plus"
+                onclick="toggleCompsFiltre(this)">Voir plus</button>
+        <?php endif; ?>
+    </div>
+</div>
+<?php endif; ?>
 
                 <div style="display:flex;gap:.75rem;justify-content:flex-end;">
                     <?php if (!empty($filters['titre']) || !empty($filters['ville']) || !empty($selectedComps)): ?>
@@ -164,62 +189,12 @@ $selectedComps = isset($filters['competences']) ? (array) $filters['competences'
             <?php endif; ?>
         <?php endif; ?>
     </div>
-</section>
 
+    <!-- Données pour le JavaScript -->
 <script>
-// ── Autocomplétion ville ─────────────────────────────────────────────────────
-const inputVille  = document.getElementById('input-ville');
-const villeSugg   = document.getElementById('ville-suggestions');
-let villeTimer;
-
-inputVille.addEventListener('input', () => {
-    clearTimeout(villeTimer);
-    const q = inputVille.value.trim();
-    if (q.length < 2) { villeSugg.style.display = 'none'; return; }
-
-    villeTimer = setTimeout(async () => {
-        try {
-            const res  = await fetch(
-                `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=6&type=municipality`
-            );
-            const data = await res.json();
-            villeSugg.innerHTML = '';
-            if (!data.features.length) { villeSugg.style.display = 'none'; return; }
-
-            data.features.forEach(f => {
-                const p  = f.properties;
-                const li = document.createElement('li');
-                li.textContent = `${p.city} (${p.postcode})`;
-                li.style.cssText = 'padding:.6rem 1rem;cursor:pointer;font-size:.9rem;border-bottom:1px solid var(--border);';
-                li.addEventListener('mouseenter', () => li.style.background = 'var(--surface)');
-                li.addEventListener('mouseleave', () => li.style.background = '');
-                li.addEventListener('click', () => {
-                    inputVille.value = p.city;
-                    villeSugg.style.display = 'none';
-                });
-                villeSugg.appendChild(li);
-            });
-            villeSugg.style.display = 'block';
-        } catch { villeSugg.style.display = 'none'; }
-    }, 300);
-});
-
-document.addEventListener('click', e => {
-    if (!inputVille.contains(e.target) && !villeSugg.contains(e.target))
-        villeSugg.style.display = 'none';
-});
-
-// ── Toggle visuel checkboxes compétences ────────────────────────────────────
-function toggleCompLabel(checkbox, id) {
-    const label = document.getElementById('label-comp-' + id);
-    if (checkbox.checked) {
-        label.style.background = 'var(--primary)';
-        label.style.color      = '#fff';
-        label.style.borderColor = 'var(--primary)';
-    } else {
-        label.style.background  = 'var(--surface)';
-        label.style.color       = 'inherit';
-        label.style.borderColor = 'var(--border)';
-    }
-}
+    window.offreIndexData = {
+        // On peut ajouter des données plus tard si besoin
+    };
 </script>
+
+</section>

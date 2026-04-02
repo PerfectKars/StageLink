@@ -664,3 +664,35 @@ ul { list-style: none; }
     color: #fff;
     background: var(--primary-dark);
 }
+
+.voir-plus {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .3rem .85rem;
+    border-radius: 99px;
+    font-family: var(--font-body);
+    font-size: .82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--primary);
+    transition: all .2s ease;
+}
+
+.voir-plus:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+}
+
+.voir-plus::after {
+    content: '▾';
+    font-size: .75rem;
+    transition: transform .2s ease;
+}
+
+.voir-plus.ouvert::after {
+    transform: rotate(-180deg);
+}
+

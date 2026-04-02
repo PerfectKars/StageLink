@@ -96,5 +96,12 @@
                 </article>
             <?php endforeach; ?>
         </div>
+            <?php
+$baseUrl = '/mes-candidatures';
+$queryParams = '';
+include __DIR__ . '/../../../templates/pagination.php';
+?>
+
     <?php endif; ?>
+
 </main>

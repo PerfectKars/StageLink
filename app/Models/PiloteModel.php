@@ -12,29 +12,52 @@ class PiloteModel extends BaseModel
     /**
      * Promotions du pilote connecté.
      */
-    public function getPromotions(int $idUtilisateur): array
-    {
-        $stmt = $this->db->prepare("
-            SELECT pr.Id_promotion, pr.Libelle, pr.Annee, pr.Filiere,
-                   COUNT(ap.Id_etudiant) AS nb_etudiants
-            FROM PROMOTION pr
-            JOIN PILOTE p ON p.Id_pilote = pr.Id_pilote
-            LEFT JOIN APPARTIENT ap ON ap.Id_promotion = pr.Id_promotion
-            WHERE p.Id_utilisateur = :id
-            GROUP BY pr.Id_promotion
-            ORDER BY pr.Annee DESC, pr.Libelle
-        ");
-        $stmt->execute([':id' => $idUtilisateur]);
-        return $stmt->fetchAll();
-    }
+    public function getPromotions(int $idUtilisateur, int $limit = 999, int $offset = 0): array
+{
+    $stmt = $this->db->prepare("
+        SELECT pr.Id_promotion, pr.Libelle, pr.Annee, pr.Filiere,
+               COUNT(ap.Id_etudiant) AS nb_etudiants
+        FROM PROMOTION pr
+        JOIN PILOTE p ON p.Id_pilote = pr.Id_pilote
+        LEFT JOIN APPARTIENT ap ON ap.Id_promotion = pr.Id_promotion
+        WHERE p.Id_utilisateur = :id
+        GROUP BY pr.Id_promotion
+        ORDER BY pr.Annee DESC, pr.Libelle
+        LIMIT :limit OFFSET :offset
+    ");
+    $stmt->bindValue(':id', $idUtilisateur, \PDO::PARAM_INT);
+    $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
+public function countPromotions(int $idUtilisateur): int
+{
+    $stmt = $this->db->prepare("
+        SELECT COUNT(*) FROM PROMOTION pr
+        JOIN PILOTE p ON p.Id_pilote = pr.Id_pilote
+        WHERE p.Id_utilisateur = :id
+    ");
+    $stmt->bindValue(':id', $idUtilisateur, \PDO::PARAM_INT);
+    $stmt->execute();
+    return (int) $stmt->fetchColumn();
+}
 
     /**
      * Détail d'une promotion.
      */
-    public function getPromotion(int $idPromotion): array|false
+        public function getPromotion(int $idPromotion): array|false
     {
         $stmt = $this->db->prepare("
-            SELECT pr.*, p.nom AS pilote_nom, p.prenom AS pilote_prenom
+            SELECT 
+                pr.Id_promotion,
+                pr.Libelle,
+                pr.Annee,
+                pr.Filiere,
+                pr.Id_pilote,
+                p.nom AS pilote_nom,
+                p.prenom AS pilote_prenom
             FROM PROMOTION pr
             JOIN PILOTE p ON p.Id_pilote = pr.Id_pilote
             WHERE pr.Id_promotion = :id
@@ -60,24 +83,40 @@ class PiloteModel extends BaseModel
     /**
      * Étudiants d'une promotion avec stats candidatures.
      */
-    public function getEtudiants(int $idPromotion): array
-    {
-        $stmt = $this->db->prepare("
-            SELECT
-                et.Id_etudiant, et.nom, et.prenom, et.Telephone, et.Statut_recherche,
-                u.Email,
-                COUNT(p.Id_offre) AS nb_candidatures
-            FROM ETUDIANT et
-            JOIN APPARTIENT ap     ON ap.Id_etudiant   = et.Id_etudiant
-            JOIN UTILISATEUR u     ON u.Id_utilisateur = et.Id_utilisateur
-            LEFT JOIN POSTULE p    ON p.Id_etudiant    = et.Id_etudiant
-            WHERE ap.Id_promotion = :id
-            GROUP BY et.Id_etudiant
-            ORDER BY et.nom, et.prenom
-        ");
-        $stmt->execute([':id' => $idPromotion]);
-        return $stmt->fetchAll();
-    }
+    public function getEtudiants(int $idPromotion, int $limit = 999, int $offset = 0): array
+{
+    $stmt = $this->db->prepare("
+        SELECT
+            et.Id_etudiant, et.nom, et.prenom, et.Telephone, et.Statut_recherche,
+            u.Email,
+            COUNT(p.Id_offre) AS nb_candidatures
+        FROM ETUDIANT et
+        JOIN APPARTIENT ap     ON ap.Id_etudiant   = et.Id_etudiant
+        JOIN UTILISATEUR u     ON u.Id_utilisateur = et.Id_utilisateur
+        LEFT JOIN POSTULE p    ON p.Id_etudiant    = et.Id_etudiant
+        WHERE ap.Id_promotion = :id
+        GROUP BY et.Id_etudiant
+        ORDER BY et.nom, et.prenom
+        LIMIT :limit OFFSET :offset
+    ");
+    $stmt->bindValue(':id', $idPromotion, \PDO::PARAM_INT);
+    $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
+public function countEtudiants(int $idPromotion): int
+{
+    $stmt = $this->db->prepare("
+        SELECT COUNT(*) FROM ETUDIANT et
+        JOIN APPARTIENT ap ON ap.Id_etudiant = et.Id_etudiant
+        WHERE ap.Id_promotion = :id
+    ");
+    $stmt->bindValue(':id', $idPromotion, \PDO::PARAM_INT);
+    $stmt->execute();
+    return (int) $stmt->fetchColumn();
+}
 
     /**
      * Vérifie qu'un étudiant est dans une promotion du pilote.
@@ -162,39 +201,50 @@ class PiloteModel extends BaseModel
     // ── CRUD admin ────────────────────────────────────────────────────────────
 
     public function findAll(int $limit = 20, int $offset = 0): array
-    {
-        $stmt = $this->db->prepare("
-            SELECT p.Id_pilote, p.nom, p.prenom, p.Telephone, u.Email,
-                   COUNT(pr.Id_promotion) AS nb_promotions
-            FROM PILOTE p
-            JOIN UTILISATEUR u     ON u.Id_utilisateur = p.Id_utilisateur
-            LEFT JOIN PROMOTION pr ON pr.Id_pilote     = p.Id_pilote
-            GROUP BY p.Id_pilote
-            ORDER BY p.nom, p.prenom
-            LIMIT :limit
-        ");
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
+{
+    $stmt = $this->db->prepare("
+        SELECT p.Id_pilote, p.nom, p.prenom, p.Telephone, u.Email,
+               COUNT(pr.Id_promotion) AS nb_promotions
+        FROM PILOTE p
+        JOIN UTILISATEUR u     ON u.Id_utilisateur = p.Id_utilisateur
+        LEFT JOIN PROMOTION pr ON pr.Id_pilote     = p.Id_pilote
+        GROUP BY p.Id_pilote
+        ORDER BY p.nom, p.prenom
+        LIMIT :limit OFFSET :offset
+    ");
+    $stmt->bindValue(':limit',  $limit,  \PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
 
-    public function findByIdFull(int $id): array|false
+        public function findByIdFull(int $id): array|false
     {
         $stmt = $this->db->prepare("
-            SELECT p.*, u.Email
+            SELECT 
+                p.Id_pilote,
+                p.nom,
+                p.prenom,
+                p.Telephone,
+                p.Id_utilisateur,
+                u.Email
             FROM PILOTE p
             JOIN UTILISATEUR u ON u.Id_utilisateur = p.Id_utilisateur
             WHERE p.Id_pilote = :id
         ");
         $stmt->execute([':id' => $id]);
         $pilote = $stmt->fetch();
+
         if (!$pilote) return false;
 
         $stmt = $this->db->prepare(
-            "SELECT Id_promotion, Libelle, Annee, Filiere FROM PROMOTION WHERE Id_pilote = :id"
+            "SELECT Id_promotion, Libelle, Annee, Filiere 
+             FROM PROMOTION 
+             WHERE Id_pilote = :id"
         );
         $stmt->execute([':id' => $id]);
         $pilote['promotions'] = $stmt->fetchAll();
+
         return $pilote;
     }
 
@@ -288,4 +338,51 @@ class PiloteModel extends BaseModel
     ]);
     return (int) $this->db->lastInsertId();
 }
+
+public function updatePromotion(int $id, array $data): void
+{
+    $stmt = $this->db->prepare("
+        UPDATE PROMOTION SET Libelle = :libelle, Annee = :annee,
+               Filiere = :filiere, Id_pilote = :pilote
+        WHERE Id_promotion = :id
+    ");
+    $stmt->execute([
+        ':libelle' => $data['libelle'],
+        ':annee'   => $data['annee'],
+        ':filiere' => $data['filiere'],
+        ':pilote'  => $data['id_pilote'] ?: null,
+        ':id'      => $id,
+    ]);
+}
+
+public function deletePromotion(int $id): void
+{
+    $this->db->prepare("DELETE FROM PROMOTION WHERE Id_promotion = :id")
+             ->execute([':id' => $id]);
+}
+
+public function getAllPromotions(int $limit = 20, int $offset = 0): array
+{
+    $stmt = $this->db->prepare("
+        SELECT pr.Id_promotion, pr.Libelle, pr.Annee, pr.Filiere,
+               p.nom AS pilote_nom, p.prenom AS pilote_prenom,
+               COUNT(ap.Id_etudiant) AS nb_etudiants
+        FROM PROMOTION pr
+        LEFT JOIN PILOTE p      ON p.Id_pilote     = pr.Id_pilote
+        LEFT JOIN APPARTIENT ap ON ap.Id_promotion = pr.Id_promotion
+        GROUP BY pr.Id_promotion
+        ORDER BY pr.Annee DESC, pr.Libelle
+        LIMIT :limit OFFSET :offset
+    ");
+    $stmt->bindValue(':limit',  $limit,  \PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
+public function countAllPromotions(): int
+{
+    return (int) $this->db->query("SELECT COUNT(*) FROM PROMOTION")->fetchColumn();
+}
+
 }

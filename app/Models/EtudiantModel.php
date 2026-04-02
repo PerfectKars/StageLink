@@ -15,6 +15,20 @@ class EtudiantModel extends BaseModel
         return (int) $this->db->query("SELECT COUNT(*) FROM ETUDIANT")->fetchColumn();
     }
 
+    public function countSearch(string $search = ''): int
+{
+    if (empty($search)) return $this->count();
+
+    $stmt = $this->db->prepare("
+        SELECT COUNT(*) FROM ETUDIANT et
+        JOIN UTILISATEUR u ON u.Id_utilisateur = et.Id_utilisateur
+        WHERE (et.nom LIKE :s OR et.prenom LIKE :s OR u.Email LIKE :s)
+    ");
+    $stmt->bindValue(':s', '%' . $search . '%');
+    $stmt->execute();
+    return (int) $stmt->fetchColumn();
+}
+
     public function search(string $search = '', int $page = 1, int $perPage = 20): array
     {
         $offset = ($page - 1) * $perPage;

@@ -23,10 +23,43 @@ class HomeController extends BaseController
         ]);
     }
 
+        /**
+     * GET /mentions-legales
+     */
     public function mentionsLegales(): void
     {
         $this->render('home/mentions-legales', [
-            'title' => 'Mentions légales',
+            'title' => 'Mentions Légales'
+        ]);
+    }
+
+    /**
+     * GET /politique-de-confidentialite
+     */
+    public function politiqueConfidentialite(): void
+    {
+        $this->render('home/politique-confidentialite', [
+            'title' => 'Politique de Confidentialité'
+        ]);
+    }
+
+    /**
+     * GET /politique-de-cookies
+     */
+    public function politiqueCookies(): void
+    {
+        $this->render('home/politique-cookies', [
+            'title' => 'Politique des Cookies'
+        ]);
+    }
+
+    /**
+     * GET /droits-auteur
+     */
+    public function droitsAuteur(): void
+    {
+        $this->render('home/droits-auteur', [
+            'title' => 'Droits d\'auteur'
         ]);
     }
 }
