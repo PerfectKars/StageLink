@@ -1,5 +1,5 @@
 <section class="auth-section">
-    <div class="container container--sm">
+    <div class="auth-card">
         <h1>Connexion</h1>
 
         <?php if (!empty($error)): ?>

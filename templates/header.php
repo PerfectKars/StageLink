@@ -6,6 +6,7 @@
     <meta name="description" content="StageLink — Plateforme de recherche de stages pour étudiants CESI">
     <meta name="keywords" content="stage, offre de stage, alternance, CESI, recrutement">
     <title><?= htmlspecialchars($title ?? 'StageLink', ENT_QUOTES, 'UTF-8') ?></title>
+    <link rel="icon" href="/assets/img/Logo.webp" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="/assets/css/style.css">

@@ -6,8 +6,10 @@ use App\Core\Router;
 $router = new Router();
 
 // ── Publiques ─────────────────────────────────────────────────────────────────
-$router->get('/',                          ['HomeController',        'index']);
-$router->get('/mentions-legales',          ['HomeController',        'mentionsLegales']);
+$router->get('/',                          ['HomeController', 'index']);
+$router->get('/mentions-legales',          ['HomeController', 'mentionsLegales']);
+$router->get('/cookies',                    ['HomeController', 'cookies']);
+$router->get('/nous_contacter',            ['HomeController', 'nousContacter']);
 
 // ── Authentification ──────────────────────────────────────────────────────────
 $router->get('/login',                     ['AuthController',        'loginForm']);
