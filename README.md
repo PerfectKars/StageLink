@@ -1,6 +1,19 @@
+![PHP](https://img.shields.io/badge/PHP-8.1-blue)
+![MySQL](https://img.shields.io/badge/MySQL-MariaDB-orange)
+![MVC](https://img.shields.io/badge/Architecture-MVC-green)
+
 # StageLink 🚀
 
 **Plateforme de gestion des stages pour le CESI**
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/cf716565-6286-4672-9703-ce8a35cffffc" />
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/62c5509a-1dc4-4211-bbbb-08bbab8b5316" />
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/67e71793-c62f-4bee-a3ee-6bd76d706a03" />
+
+
+
 
 StageLink est une application web développée en PHP 8.1+ qui facilite la mise en relation entre **étudiants**, **pilotes de promotion**, **administrateurs** et **entreprises** pour la recherche, la publication et le suivi des stages.
 
@@ -25,7 +38,7 @@ StageLink est une application web développée en PHP 8.1+ qui facilite la mise 
 - CRUD des promotions (création, modification, suppression, détail avec liste paginée des étudiants)
 - Gestion des pilotes et étudiants
 
-### Pour les Entreprises (en cours)
+### Pour les Entreprises
 - Publication et gestion des offres de stage
 - Notation des entreprises par les étudiants
 
