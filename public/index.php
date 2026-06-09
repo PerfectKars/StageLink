@@ -2,7 +2,12 @@
 declare(strict_types=1);
 
 // Chargement .env
-$envFile = dirname(__DIR__, 2) . '/.env';
+$envFile = '/home/wsl/StageLink-1.7.0/.env';
+if (file_exists($envFile)) {
+    error_log("ENV file found at " . $envFile);
+} else {
+    error_log("ENV file NOT found at " . $envFile);
+}
 if (file_exists($envFile)) {
     foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
         if (str_starts_with(trim($line), '#')) continue;
